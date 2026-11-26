@@ -1,0 +1,26 @@
+##fileformat=VCFv4.2
+##fileDate=20261110
+##source=SmartsBioBenchmarkFixtures
+##reference=GRCh38
+##contig=<ID=1,length=248956422>
+##contig=<ID=2,length=242193529>
+##contig=<ID=6,length=170805979>
+##contig=<ID=7,length=159345973>
+##contig=<ID=11,length=135086622>
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="Mapping Quality">
+##INFO=<ID=QD,Number=1,Type=Float,Description="Quality by depth">
+##FILTER=<ID=PASS,Description="All filters passed">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLE1
+1	11796321	rs1801133	G	A	1204.77	PASS	AC=1;AF=0.50;AN=2;DP=58;MQ=60.00;QD=20.77	GT:AD:DP:GQ	0/1:29,29:58:99
+2	135851076	rs4988235	G	A	988.45	PASS	AC=2;AF=1.00;AN=2;DP=41;MQ=60.00;QD=24.11	GT:AD:DP:GQ	1/1:0,41:41:99
+6	26092913	rs1800562	G	A	742.18	PASS	AC=1;AF=0.50;AN=2;DP=37;MQ=59.41;QD=20.06	GT:AD:DP:GQ	0/1:19,18:37:99
+7	87509329	rs1045642	A	T	1331.92	PASS	AC=2;AF=1.00;AN=2;DP=52;MQ=60.00;QD=25.61	GT:AD:DP:GQ	1/1:0,52:52:99
+11	5227002	rs334	T	A	864.30	PASS	AC=1;AF=0.50;AN=2;DP=44;MQ=58.77;QD=19.64	GT:AD:DP:GQ	0/1:24,20:44:99

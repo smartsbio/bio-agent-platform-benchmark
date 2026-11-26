@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "biomni": {
+      "type": "stdio",
+      "command": "platforms/biomni_docker.sh"
+    }
+  }
+}

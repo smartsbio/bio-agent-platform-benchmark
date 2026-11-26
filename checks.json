@@ -1,0 +1,296 @@
+{
+  "_README": [
+    "Deterministic recall checks for check_type=contains_all rows.",
+    "",
+    "WHY THIS FILE EXISTS, AND WHY IT IS SEPARATE FROM tasks.csv:",
+    "tasks.csv was pre-registered and frozen before the first run, and its",
+    "ground_truth column is prose written for a human and for the rubric judge",
+    "('1EMA is NOT wild type; it is the S65T point mutant of GFP'). Prose cannot",
+    "be string-matched. This file operationalises that prose into checkable",
+    "items WITHOUT editing the frozen task set, so tasks.csv keeps the commit",
+    "hash cited in the article.",
+    "",
+    "EVERY item below is derived from the frozen ground_truth or rubric text of",
+    "its own task. None was derived by reading any model's answer. That is the",
+    "property that keeps this honest: the checks were written from the task",
+    "definition, not reverse-engineered from the responses they will grade.",
+    "",
+    "SEMANTICS: 'require' is a list of requirements; each requirement is a list",
+    "of synonyms, and ANY ONE synonym satisfies it. All requirements must be",
+    "satisfied to PASS. So this is a RECALL check: it asks whether the answer",
+    "mentioned the things a correct answer must mention.",
+    "",
+    "'pairs' is a stricter variant for a row whose answer is a table: each",
+    "entry is [label, value, ...accepted values], and it is satisfied when some",
+    "LINE carries the label with one of its own values closest to it. It exists",
+    "because contains_all would pass an answer that merely mentions the right",
+    "integers somewhere. A pair spec applies whatever check_type tasks.csv",
+    "froze, since deterministic_pass is a separate column from the model's",
+    "score and so adds signal without touching the frozen task set.",
+    "",
+    "A FAIL is authoritative: an answer missing a required item cannot be fully",
+    "correct. A PASS is NOT authoritative: it means the items were named, not",
+    "that the surrounding claims are right. judge.py treats the two",
+    "asymmetrically when it flags disagreements for the human audit.",
+    "",
+    "'invalid' withdraws a check whose own frozen ground_truth proved wrong",
+    "about its input: the requirements are kept as they ran, but no verdict is",
+    "produced, because a FAIL would grade the task definition and not the",
+    "answer. The correction goes in results/reference_audit.csv.",
+    "",
+    "'partial' records that the ground truth makes a claim this check cannot",
+    "see (a direction, a negation, a numeric tolerance). Those claims stay with",
+    "the rubric judge. 'rubric_only' means no deterministic check is possible",
+    "at all, with the reason."
+  ],
+  "look-002": {
+    "require": [
+      [
+        "s65t"
+      ]
+    ],
+    "partial": "The 'is NOT wild type' half is a negation; naming S65T is necessary but a self-contradicting answer would still pass."
+  },
+  "look-003": {
+    "require": [
+      [
+        "17q21 31",
+        "17q21"
+      ]
+    ]
+  },
+  "look-004": {
+    "require": [
+      [
+        "cftr"
+      ],
+      [
+        "pathogenic"
+      ],
+      [
+        "f508del",
+        "delta f508",
+        "deltaf508",
+        "phe508del",
+        "f508"
+      ]
+    ]
+  },
+  "look-007": {
+    "require": [
+      [
+        "mdm2"
+      ]
+    ],
+    "partial": "Rubric requires MDM2 plus a confidence score or source; only MDM2's presence is checked here. The other five interactors are 'expected', not required."
+  },
+  "seq-002": {
+    "require": [
+      [
+        "5386"
+      ],
+      [
+        "phix174",
+        "phi x174",
+        "phix 174",
+        "phi x 174"
+      ]
+    ]
+  },
+  "seq-004": {
+    "require": [
+      [
+        "tgcacgttaacgccat"
+      ],
+      [
+        "maltc"
+      ]
+    ]
+  },
+  "blast-001": {
+    "rubric_only": "Row is void pending a decision: the frozen prompt contains no sequence to search, so no answer can be correct. Do not score deterministically."
+  },
+  "blast-003": {
+    "require": [
+      [
+        "nc 001422"
+      ],
+      [
+        "phix174",
+        "phi x174",
+        "phix 174",
+        "phi x 174"
+      ]
+    ]
+  },
+  "msa-001": {
+    "require": [
+      [
+        "human",
+        "p68871"
+      ],
+      [
+        "mouse",
+        "p02088"
+      ],
+      [
+        "chicken",
+        "p02112"
+      ]
+    ],
+    "partial": "The real claim is tree topology (human+mouse closest, chicken outgroup), which presence of the three taxa cannot establish. Topology stays with the rubric."
+  },
+  "ngs-003": {
+    "require": [
+      [
+        "1 14000",
+        "14000"
+      ],
+      [
+        "2 11500",
+        "11500"
+      ]
+    ],
+    "partial": "Bare positions are accepted as synonyms because prose ('position 14000 on chromosome 1') does not produce a chr:pos token. Slightly loose by design.",
+    "invalid": "These two positions are not in aligned.bam at all -- the frozen ground_truth attributes the tumour/normal fixtures' germline SNVs to the wrong file, so this check fails every answer, including correct ones. The require list is left exactly as it ran rather than fixed mid-flight; the correction is in results/reference_audit.csv via audit/verify_ngs003.py. Treat a FAIL here as uninformative, not as a recall loss."
+  },
+  "ngs-004": {
+    "require": [
+      [
+        "1 11000",
+        "11000"
+      ],
+      [
+        "2 13000",
+        "13000"
+      ],
+      [
+        "4 12000",
+        "12000"
+      ]
+    ],
+    "partial": "Only the positive half is checked. The harder half of this task is the NEGATIVE requirement (must not call chr1:14000 or chr2:11500 as somatic), which string presence cannot test since both coordinates legitimately appear in a correct answer that labels them germline."
+  },
+  "ngs-005": {
+    "pairs": [
+      [
+        "GENE2",
+        952,
+        551
+      ],
+      [
+        "GENE4",
+        960,
+        561
+      ],
+      [
+        "GENE6",
+        961,
+        564
+      ]
+    ],
+    "window": 6,
+    "partial": "Three of the six genes, a count only, and either counting convention accepted. Each pair lists the read-level count (featureCounts default, each mate counted separately) and the fragment-level count (-p --countReadPairs, a pair counted once); which one a tool reports is a flag, not a result. GENE1 and GENE5 are omitted because they sit against hg19mini's telomeric repeat tracts, where which position a read is assigned is a property of the aligner rather than of the data, so two correct tools disagree. GENE3 is omitted because the derivation calls it exact (826 reads / 503 fragments) but all three tool-running arms reported 453-556, agreeing with neither the derivation nor each other -- an unresolved discrepancy must not be scored as ground truth. The rubric judge still decides whether a real matrix was produced at all, which is what the frozen ground_truth asks.",
+    "derivation": "audit/derive_ngs005_truth.py \u2014 places every read in hg19mini by seed-and-extend (the reads are error-free 100bp cuts, so this is exact, not heuristic), intersects with annotation.gtf exons, and sweeps five placement parameter settings. Only counts identical under all five are used here. Derived from the fixtures, never from any answer.",
+    "correction": "Added post-freeze, and first frozen with read-level counts only. All three tool-running arms reported the fragment-level column, so the check failed three correct answers. Their agreement is what prompted the re-derivation; the corrected values come from the fixtures alone (audit/derive_ngs005_truth.py), not from any answer. Recorded in results/reference_audit.csv. The llm_rubric scores this row was frozen with were never affected."
+  },
+  "ngs-006": {
+    "rubric_only": "Planted peak boundaries (10150-10350, 15700-15900) are approximate targets. A correct peak caller reports its own boundaries, so exact-string matching would fail correct answers. Needs interval-overlap with tolerance, not contains_all."
+  },
+  "expr-001": {
+    "require": [
+      [
+        "gene1"
+      ],
+      [
+        "gene4"
+      ],
+      [
+        "gene7"
+      ],
+      [
+        "gene2"
+      ],
+      [
+        "gene5"
+      ],
+      [
+        "gene8"
+      ]
+    ],
+    "partial": "Presence only. The scored claim is DIRECTION (1/4/7 up, 2/5/8 down) and that GENE3/GENE6 are unchanged; both stay with the rubric."
+  },
+  "expr-003": {
+    "require": [
+      [
+        "p53 signalling",
+        "p53 signaling",
+        "dna damage",
+        "apoptosis"
+      ]
+    ],
+    "partial": "Ground truth lists alternative acceptable themes, so this is an any-of check. The rubric still has to confirm an enrichment analysis was actually run with statistics rather than recalled."
+  },
+  "var-002": {
+    "require": [
+      [
+        "brca2"
+      ],
+      [
+        "pathogenic"
+      ],
+      [
+        "ser1982",
+        "s1982",
+        "6174delt",
+        "6174del t"
+      ]
+    ]
+  },
+  "struct-003": {
+    "require": [
+      [
+        "p37840"
+      ]
+    ],
+    "partial": "The frozen ground truth asserts LOW pLDDT, which a post-hoc audit refuted (actual mean 75.19). Only the accession is checked; the pLDDT claim is deliberately NOT checked because the reference is wrong. See results/reference_audit.csv."
+  },
+  "struct-004": {
+    "require": [
+      [
+        "x ray",
+        "xray",
+        "x ray diffraction"
+      ],
+      [
+        "1 8",
+        "1 80"
+      ]
+    ],
+    "partial": "This row is numeric_tol in contains_all clothing, so the synonyms enumerate decimal renderings of the same value: PDB REMARK 2 reports '1.80 ANGSTROMS' while the frozen ground truth says '1.8 Angstrom'. Matching the bare number is loose but the x-ray requirement anchors the row."
+  },
+  "mol-001": {
+    "require": [
+      [
+        "aspirin",
+        "acetylsalicylic"
+      ],
+      [
+        "lipinski"
+      ]
+    ],
+    "partial": "The numeric properties (MW 180.16, LogP 1.2, HBD 1, HBA 4) and the zero-violation verdict stay with the rubric."
+  },
+  "mol-003": {
+    "require": [
+      [
+        "complex i",
+        "ampk"
+      ],
+      [
+        "chembl"
+      ]
+    ],
+    "partial": "Ground truth accepts complex I and/or AMPK, so that requirement is any-of."
+  }
+}

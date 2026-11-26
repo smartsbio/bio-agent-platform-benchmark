@@ -1,0 +1,37 @@
+# Secrets — never commit. The negation keeps the credential-free template.
+.env
+.env.*
+*.env
+!.env.example
+
+# Working artefacts: superseded copies, logs and scratch output. The published
+# record is tasks.csv, results/runs.csv, results/*_audit.csv and transcripts/.
+*.bak
+*.log
+*.orig
+results/runs.csv.*
+results/runs-round*.csv
+results/runs.pre-*.csv
+results/spec_*.csv
+results/summary.csv
+results/by_category.csv
+results/head_to_head.csv
+
+# Editor and OS cruft
+.vscode/
+.idea/
+.ipynb_checkpoints/
+
+# Large fixture fetched by fetch_fixtures.sh rather than stored in git
+fixtures/pbmc3k_raw.h5ad
+
+# Uncompressed copies of the gzipped read fixtures (regenerated on demand)
+fixtures/reads_R1.fastq
+fixtures/reads_R2.fastq
+
+# Virtualenv for the Biomni arm's dependencies
+.venv/
+
+__pycache__/
+*.pyc
+.DS_Store

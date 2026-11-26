@@ -1,0 +1,131 @@
+task_id,arm,rep,kind,identifier,verdict,title,judge_hallucination
+look-002,biomni,1,pmid,8703075,registered,Crystal structure of the Aequorea victoria green fluorescent protein. [Science],y
+look-002,biomni,1,pmid,9122190,registered,Structural basis for dual excitation and photoisomerization of the Aequorea victoria green,y
+look-002,biomni,1,pmid,9631087,registered,The molecular structure of green fluorescent protein. [Nat Biotechnol],y
+look-002,biomni,1,uniprot,P42212,registered,Green fluorescent protein [P42212],y
+look-002,smartsbio-key,1,pdb,1EMA,registered,GREEN FLUORESCENT PROTEIN FROM AEQUOREA VICTORIA,n
+look-002,smartsbio-key,1,pmid,8703075,registered,Crystal structure of the Aequorea victoria green fluorescent protein. [Science],n
+look-002,smartsbio-key,1,pmid,9122190,registered,Structural basis for dual excitation and photoisomerization of the Aequorea victoria green,n
+look-002,smartsbio-key,1,pmid,9631087,registered,The molecular structure of green fluorescent protein. [Nat Biotechnol],n
+look-002,baseline,1,pdb,1EMA,registered,GREEN FLUORESCENT PROTEIN FROM AEQUOREA VICTORIA,n
+look-002,baseline,1,pdb,1GFL,registered,STRUCTURE OF GREEN FLUORESCENT PROTEIN,n
+look-007,biomni,1,uniprot,P04637,registered,Cellular tumor antigen p53 [P04637],n
+look-007,baseline,1,pdb,1YCR,registered,MDM2 BOUND TO THE TRANSACTIVATION DOMAIN OF P53,n
+look-007,baseline,1,pdb,3DAB,registered,Structure of the human Mdmx protein bound to the p53 tumor suppressor transactivation doma,n
+look-008,biomni,1,chembl,CHEMBL1862,registered,Tyrosine-protein kinase ABL1 [target],n
+look-008,biomni,1,chembl,CHEMBL1908688,registered,Binding constant for ABL1-non phosphorylated kinase domain [assay],n
+look-008,biomni,1,chembl,CHEMBL2406231,registered,Inhibition of human wild-type ABL (Ser229 to Gln513)-mediated phosphorylation of biotinyla,n
+look-008,biomni,1,chembl,CHEMBL3734755,registered,Development of Alkyne-Containing Pyrazolopyrimidines To Overcome Drug Resistance of Bcr-Ab,n
+look-008,biomni,1,chembl,CHEMBL3737992,registered,Inhibition of human wild-type Abl after 30 mins by phosphocellulose paper disk assay using,n
+look-008,biomni,1,chembl,CHEMBL4383405,registered,Inhibition of wild type C-terminal FLAG-tagged human TEL fused ABL (unknown origin) transf,n
+look-008,biomni,1,chembl,CHEMBL932076,registered,Inhibition of human recombinant Abl [assay],n
+look-008,biomni,1,chembl,CHEMBL941,registered,IMATINIB [molecule],n
+look-008,biomni,1,chembl,CHEMBL962773,registered,Inhibition of human recombinant Abl by filter-binding assay [assay],n
+look-008,biomni,1,uniprot,P00519,registered,Tyrosine-protein kinase ABL1 [P00519],n
+look-008,galaxy,1,chembl,CHEMBL1862,registered,Tyrosine-protein kinase ABL1 [target],n
+look-008,galaxy,1,chembl,CHEMBL941,registered,IMATINIB [molecule],n
+look-008,baseline,1,chembl,CHEMBL1862,registered,Tyrosine-protein kinase ABL1 [target],n
+look-008,baseline,1,chembl,CHEMBL941,registered,IMATINIB [molecule],n
+lit-001,smartsbio-key,1,doi,10.1002/prot.70078,registered,"Practical Outcomes From
+                    <scp>CASP16</scp>
+                    for User",n
+lit-001,smartsbio-key,1,doi,10.1021/acs.jcim.6c01301,registered,"Combining AI Structure
+Prediction and Integrative
+Modeling for Nanobody-Antigen Complexes",n
+lit-001,smartsbio-key,1,doi,10.1038/s41467-025-67127-3,registered,Benchmarking all-atom biomolecular structure prediction with FoldBench,n
+lit-001,smartsbio-key,1,doi,10.1093/bib/bbag289,registered,Benchmarking TCR–pMHC structure prediction: a unified evaluation and CDR3-based functional,n
+lit-001,smartsbio-key,1,doi,10.1093/bioinformatics/btag136,registered,Evaluating deep learning based structure prediction methods on antibody–antigen complexes,n
+lit-001,smartsbio-key,1,doi,10.1101/2025.09.17.676770,registered,Pocket Restraints Guided by B-Cell Epitope Prediction Improves Chai-1 Antibody-Antigen Str,n
+lit-001,smartsbio-key,1,doi,10.1101/2025.11.28.691195,registered,Adapting Co-Folding Models for Structure-Based Protein-Protein Docking Through Flow Matchi,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.02.09.704787,registered,IntelliFold-2: Surpassing AlphaFold 3 via Architectural Refinement and Structural Consiste,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.03.17.712376,registered,ABAG-Rank: Improving Model Selection of AlphaFold Antibody–Antigen Complexes by Learning t,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.04.03.716280,registered,A geometry-over-coevolution principle governs protein complex assembly in AlphaFold,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.04.14.718427,registered,Benchmarking MSA pairing for protein-protein complex structure prediction reveals a depth-,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.05.13.724924,registered,Benchmarking Boltz-2 for Screening of Therapeutic Antibody-Antigen Interactions,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.07.04.736425,registered,Benchmarking AlphaFold and related deep learning approaches for modeling antibody and TCR ,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.09.26.754739,registered,EnsPlex: Integrative Protein Complex Prediction through Multi-source Complementary Structu,n
+lit-001,smartsbio-key,1,doi,10.64898/2026.10.24.761513,registered,Can Folding Models Tell Binders from Bluffers? Evidence from POISK: The Patent-Derived Ant,n
+lit-001,smartsbio-key,1,pmid,39831331,registered,AlphaFold and Docking Approaches for Antibody-Antigen and Other Targets: Insights From CAP,n
+lit-001,smartsbio-key,1,pmid,39868877,registered,Massive Sampling Strategy for Antibody-Antigen Targets in CAPRI Round 55 With MassiveFold.,n
+lit-001,smartsbio-key,1,pmid,40028659,registered,Towards a Greener AlphaFold2 Protocol for Antibody-Antigen Modeling: Insights From CAPRI R,n
+lit-001,smartsbio-key,1,pmid,41088961,registered,Practical Outcomes From CASP16 for Users in Need of Biomolecular Structure Prediction. [Pr,n
+lit-001,smartsbio-key,1,pmid,41345395,registered,Benchmarking all-atom biomolecular structure prediction with FoldBench. [Nat Commun],n
+lit-001,smartsbio-key,1,pmid,41863324,registered,Evaluating deep learning based structure prediction methods on antibody-antigen complexes.,n
+lit-001,smartsbio-key,1,pmid,42129084,registered,Complementarity of Deep Learning and Physics-Based Approaches in the Design of New Antibod,n
+lit-001,smartsbio-key,1,pmid,42248582,registered,Benchmarking TCR-pMHC structure prediction: a unified evaluation and CDR3-based functional,n
+lit-001,smartsbio-key,1,pmid,42420197,registered,Predicting antibody self-association with sequence-structure fusion models: the central ro,n
+lit-001,smartsbio-key,1,pmid,42465237,registered,Benchmarking AlphaFold and related deep learning approaches for modeling antibody and TCR ,n
+lit-001,smartsbio-key,1,pmid,42725674,registered,HDX-MS-Guided computational modeling for rapid and accurate antibody-antigen interface map,n
+lit-001,smartsbio-key,1,pmid,42734515,registered,Combining AI Structure Prediction and Integrative Modeling for Nanobody-Antigen Complexes.,n
+lit-001,smartsbio-key,1,pmid,42957427,registered,SprintX: mitigating data scarcity in antibody design via synthetic structural prior knowle,n
+lit-001,smartsbio-key,1,pmid,42962292,registered,Sequence Scanning Improves Accuracy for Antibody-Antigen and Molecular Glue Ternary Comple,n
+lit-001,baseline,1,doi,10.1038/s41586-024-07487-9,absent,,n
+lit-001,baseline,1,doi,10.1101/2021.10.04.463034,registered,Protein complex prediction with AlphaFold-Multimer,n
+lit-001,galaxy,1,doi,10.1038/s41586-021-03819-2,registered,Highly accurate protein structure prediction with AlphaFold,n
+lit-001,galaxy,1,doi,10.1038/s41586-024-07487-6,absent,,n
+lit-001,biomni,1,doi,10.1016/j.sbi.2025.102983,registered,Challenges and compromises: Predicting unbound antibody structures with deep learning,y
+lit-001,biomni,1,doi,10.1038/s42003-026-10757-0,registered,High-accuracy structural modeling of antibody-antigen complexes,y
+lit-001,biomni,1,doi,10.1080/19420862.2025.2545601,registered,"What does AlphaFold3 learn about antibody and nanobody docking, and what remains unsolved?",y
+lit-001,biomni,1,doi,10.1080/19420862.2026.2719263,registered,AlphaFold 3 prediction of TCR mimic Fv – pMHC complex structures and their validation and ,y
+lit-001,biomni,1,doi,10.1093/bib/bbaf616,registered,A comprehensive benchmarking of the AlphaFold3 for predicting biomacromolecules and their ,y
+lit-001,biomni,1,doi,10.1093/bioinformatics/btag136,registered,Evaluating deep learning based structure prediction methods on antibody–antigen complexes,y
+lit-001,biomni,1,doi,10.5281/zenodo.17978681,registered,Evaluating Deep Learning Based Structure Prediction Methods on Antibody-Antigen Complexes.,y
+lit-001,biomni,1,doi,10.5281/zenodo.21132090,registered,ABAG-Rank,y
+lit-001,biomni,1,doi,10.64898/2025.12.01.691162,registered,Improving nanobody structure prediction with self-distillation,y
+lit-001,biomni,1,doi,10.64898/2026.02.13.705647,registered,Disulphide and sequence-encoded conformational priors guide nanobody structure prediction,y
+lit-001,biomni,1,doi,10.64898/2026.06.03.729879,registered,Modelling antibody structures at the speed of language,y
+lit-001,biomni,1,doi,10.64898/2026.07.30.741792,registered,A Structural Antibody Benchmark of AlphaFold3 reveals Hallucinated Epitopes and a Bias for,y
+lit-001,biomni,1,doi,10.64898/2026.08.16.745116,registered,AFilter: Improved Antibody Epitope Prediction by Machine Learning-Optimized Interface Ener,y
+lit-001,biomni,1,doi,10.64898/2026.08.20.745880,registered,Benchmarking antibody-antigen co-folding on human monomeric antigens,y
+lit-001,biomni,1,pmid,38659833,registered,PAbFold: Linear Antibody Epitope Prediction using AlphaFold2. [bioRxiv],y
+mol-003,biomni,1,chembl,CHEMBL1431,registered,METFORMIN [molecule],n
+mol-003,biomni,1,chembl,CHEMBL1614544,registered,PUBCHEM_BIOASSAY: qHTS Assay for Modulators of Lamin A Splicing. (Class of assay: confirma,n
+mol-003,biomni,1,chembl,CHEMBL1703,registered,METFORMIN HYDROCHLORIDE [molecule],n
+mol-003,biomni,1,chembl,CHEMBL2363065,registered,Mitochondrial complex I (NADH dehydrogenase) [target],n
+mol-003,biomni,1,chembl,CHEMBL3391681,registered,"Glycerol-3-phosphate dehydrogenase, mitochondrial [target]",n
+mol-003,biomni,1,chembl,CHEMBL4699781,registered,Cytotoxicity against human MCF7 cells assessed as inhibition of cell growth measured after,n
+mol-003,biomni,1,chembl,CHEMBL5291732,registered,Binding affinity towards human ADRA1A in an in vitro assay with cellular components (NIBR ,n
+mol-003,biomni,1,cid,4091,registered,Metformin [C4H11N5],n
+mol-003,biomni,1,uniprot,P43304,registered,"Glycerol-3-phosphate dehydrogenase, mitochondrial [P43304]",n
+mol-003,galaxy,1,chembl,CHEMBL1431,registered,METFORMIN [molecule],n
+mol-003,galaxy,1,cid,4091,registered,Metformin [C4H11N5],n
+mol-003,smartsbio-key,1,chembl,CHEMBL1431,registered,METFORMIN [molecule],n
+mol-003,smartsbio-key,1,chembl,CHEMBL1703,registered,METFORMIN HYDROCHLORIDE [molecule],n
+mol-003,smartsbio-key,1,chembl,CHEMBL2108299,registered,METFORMIN GLYCINATE [molecule],n
+mol-003,smartsbio-key,1,chembl,CHEMBL494397,registered,METFORMIN XR [molecule],n
+mol-003,smartsbio-key,1,cid,4091,registered,Metformin [C4H11N5],n
+mol-003,smartsbio-key,1,pmid,28942196,registered,Metformin selectively targets redox control of complex I energy transduction. [Redox Biol],n
+mol-003,smartsbio-key,1,pmid,29740925,registered,Metformin directly targets the H3K27me3 demethylase KDM6A/UTX. [Aging Cell],n
+mol-003,smartsbio-key,1,pmid,31343786,registered,Mitochondrial targets of metformin-Are they physiologically relevant? [Biofactors],n
+mol-003,smartsbio-key,1,uniprot,Q13131,registered,5'-AMP-activated protein kinase catalytic subunit alpha-1 [Q13131],n
+mol-003,baseline,1,chembl,CHEMBL1431,registered,METFORMIN [molecule],n
+day-001,smartsbio-key,1,pdb,12AS,registered,"ASPARAGINE SYNTHETASE MUTANT C51A, C315A COMPLEXED WITH L-ASPARAGINE AND AMP",n
+day-001,smartsbio-key,1,uniprot,P00963,registered,Aspartate--ammonia ligase [P00963],n
+day-001,baseline,1,pdb,12AS,registered,"ASPARAGINE SYNTHETASE MUTANT C51A, C315A COMPLEXED WITH L-ASPARAGINE AND AMP",n
+mol-001,biomni,1,chembl,CHEMBL25,registered,ASPIRIN [molecule],n
+mol-001,biomni,1,cid,2244,registered,Aspirin [C9H8O4],n
+mol-001,smartsbio-key,1,cid,2244,registered,Aspirin [C9H8O4],n
+mol-001,baseline,1,cid,2244,registered,Aspirin [C9H8O4],n
+mol-002,biomni,1,chembl,CHEMBL154,registered,NAPROXEN [molecule],n
+mol-002,biomni,1,chembl,CHEMBL191413,registered,REPARIXIN [molecule],n
+mol-002,biomni,1,chembl,CHEMBL2152248,registered,CHEMBL2152248 [molecule],n
+mol-002,biomni,1,chembl,CHEMBL221,registered,Prostaglandin G/H synthase 1 [target],n
+mol-002,biomni,1,chembl,CHEMBL230,registered,Prostaglandin G/H synthase 2 [target],n
+mol-002,biomni,1,chembl,CHEMBL244350,registered,CHEMBL244350 [molecule],n
+mol-002,biomni,1,chembl,CHEMBL292707,registered,IBUPROXAM [molecule],n
+mol-002,biomni,1,chembl,CHEMBL4215223,registered,CHEMBL4215223 [molecule],n
+mol-002,biomni,1,chembl,CHEMBL521,registered,IBUPROFEN [molecule],n
+mol-002,galaxy,1,chembl,CHEMBL175,registered,DEXIBUPROFEN [molecule],n
+mol-002,galaxy,1,chembl,CHEMBL366264,registered,CHEMBL366264 [molecule],n
+mol-002,smartsbio-key,1,chembl,CHEMBL191413,registered,REPARIXIN [molecule],n
+mol-002,smartsbio-key,1,chembl,CHEMBL2095157,registered,Cyclooxygenase [target],n
+mol-002,smartsbio-key,1,chembl,CHEMBL2096909,registered,"Interleukin-8 receptors, CXCR1/CXCR2 [target]",n
+mol-002,smartsbio-key,1,chembl,CHEMBL2172782,registered,CHEMBL2172782 [molecule],n
+mol-002,smartsbio-key,1,chembl,CHEMBL2434,registered,C-X-C chemokine receptor type 2 [target],n
+mol-002,smartsbio-key,1,chembl,CHEMBL312,registered,Polyunsaturated fatty acid 5-lipoxygenase [target],n
+mol-002,smartsbio-key,1,chembl,CHEMBL4215223,registered,CHEMBL4215223 [molecule],n
+mol-002,smartsbio-key,1,cid,12508533,registered,2-[6-(2-Methylpropyl)-3-pyridinyl]propanoic acid [C12H17NO2],n
+mol-002,smartsbio-key,1,cid,3672,registered,"Ibuprofen, (+-)- [C13H18O2]",n
+mol-002,smartsbio-key,1,cid,44427681,registered,2-[4-(Cyclopropylmethyl)phenyl]propanoic acid [C13H16O2],n
+mol-002,smartsbio-key,1,cid,54156631,registered,2-[4-(2-Fluoro-2-methylpropyl)phenyl]propanoic acid [C13H17FO2],n
+mol-002,smartsbio-key,1,uniprot,P25024,registered,C-X-C chemokine receptor type 1 [P25024],n

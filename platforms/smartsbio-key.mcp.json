@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "smartsbio": {
+      "type": "http",
+      "url": "https://mcp.smarts.bio/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SMARTSBIO_API_KEY}"
+      }
+    }
+  }
+}

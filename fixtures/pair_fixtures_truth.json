@@ -1,0 +1,79 @@
+{
+  "reference": "hg19mini.fasta",
+  "seed": 20261101,
+  "coverage_per_sample": 30,
+  "read_length": 100,
+  "fragment_length": 300,
+  "somatic_variants": [
+    {
+      "chrom": "1",
+      "pos": 11000,
+      "ref": "C",
+      "alt": "T",
+      "expected": "called as somatic"
+    },
+    {
+      "chrom": "2",
+      "pos": 13000,
+      "ref": "A",
+      "alt": "C",
+      "expected": "called as somatic"
+    },
+    {
+      "chrom": "4",
+      "pos": 12000,
+      "ref": "G",
+      "alt": "T",
+      "expected": "called as somatic"
+    }
+  ],
+  "germline_variants": [
+    {
+      "chrom": "1",
+      "pos": 14000,
+      "ref": "A",
+      "alt": "C",
+      "expected": "present in both samples; must NOT be called somatic"
+    },
+    {
+      "chrom": "2",
+      "pos": 11500,
+      "ref": "A",
+      "alt": "G",
+      "expected": "present in both samples; must NOT be called somatic"
+    }
+  ],
+  "chip_peak_regions": [
+    {
+      "chrom": "1",
+      "start": 10150,
+      "end": 10350
+    },
+    {
+      "chrom": "1",
+      "start": 15700,
+      "end": 15900
+    },
+    {
+      "chrom": "2",
+      "start": 10150,
+      "end": 10350
+    },
+    {
+      "chrom": "2",
+      "start": 15700,
+      "end": 15900
+    },
+    {
+      "chrom": "4",
+      "start": 10150,
+      "end": 10350
+    },
+    {
+      "chrom": "4",
+      "start": 15700,
+      "end": 15900
+    }
+  ],
+  "chip_enrichment_fraction": 0.6
+}

@@ -1,0 +1,6 @@
+# No third-party packages. The harness runs on a stock Python 3.9+ and the
+# `claude` CLI, so anyone can reproduce the numbers without a build step.
+#
+# External requirements:
+#   - claude CLI          https://claude.com/claude-code
+#   - uv (galaxy arm)     brew install uv     # provides `uvx galaxy-mcp`

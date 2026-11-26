@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The execution gap in agentic bioinformatics</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 18mm 18mm; }
+  :root{
+    --ink:#111; --ink2:#3a3a3a; --muted:#6b6b6b;
+    --rule:#c8c8c8; --grid:#e3e3e0; --axis:#b0b0ac; --surface:#fbfbfa;
+    --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+    --q0:#cde2fb; --q1:#9ec5f4; --q2:#6da7ec; --q3:#3987e5;
+    --q4:#256abf; --q5:#184f95; --q6:#0d366b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; color:var(--ink); background:#fff;
+    font-family:"Times New Roman",Times,serif;
+    font-size:10pt; line-height:1.5; text-align:justify;
+    hyphens:auto; -webkit-hyphens:auto;
+    font-variant-numeric:lining-nums;
+    font-feature-settings:"lnum" 1,"onum" 0;
+  }
+  .wrap{max-width:170mm; margin:0 auto}
+  .hdr{border-bottom:1.5pt solid var(--ink); padding-bottom:8pt; margin-bottom:12pt}
+  h1{font-size:19pt; line-height:1.2; margin:0 0 5pt; text-align:left;
+     letter-spacing:-0.01em; font-weight:700}
+  .subtitle{font-size:11.5pt; font-style:italic; color:var(--ink2);
+     margin:0 0 9pt; text-align:left}
+  .authors{font-size:9pt; margin:0 0 3pt; text-align:left}
+  .authors b{font-weight:700}
+  h2{font-size:12.5pt; margin:16pt 0 5pt; font-weight:700; text-align:left;
+     break-after:avoid; page-break-after:avoid}
+  h3{font-size:10.2pt; margin:11pt 0 3pt; font-weight:700; text-align:left;
+     break-after:avoid; page-break-after:avoid}
+  p{margin:0 0 6pt; orphans:3; widows:3}
+  .abs{margin:0 0 10pt}
+  .abs h2{font-size:11pt; margin:0 0 5pt}
+  .abs p{font-size:9.2pt; margin:0 0 5pt}
+  .kw{font-size:9pt; color:var(--ink2); margin:0 0 4pt; text-align:left}
+  figure{margin:11pt 0; padding:0; break-inside:avoid; page-break-inside:avoid}
+  figure svg{display:block; width:100%; height:auto}
+  figcaption{font-size:8.4pt; line-height:1.45; color:var(--ink2);
+     margin-top:5pt; text-align:left}
+  figcaption .fnum{font-weight:700; color:var(--ink)}
+  .ftitle{font-size:9pt; font-weight:700; margin:0 0 1pt; text-align:left}
+  .fsub{font-size:8.2pt; color:var(--muted); margin:0 0 7pt; text-align:left}
+  table{border-collapse:collapse; width:100%; font-size:8.6pt;
+     margin:4pt 0 3pt; font-family:system-ui,-apple-system,sans-serif;
+     break-inside:avoid; page-break-inside:avoid}
+  caption{caption-side:top; font-size:8.4pt; text-align:left;
+     margin-bottom:3pt; font-family:"Times New Roman",Times,serif; color:var(--ink2)}
+  caption b{color:var(--ink)}
+  th,td{text-align:right; padding:3pt 5pt; border-bottom:0.5pt solid var(--grid)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{border-bottom:0.8pt solid var(--ink); font-weight:700;
+     font-size:8.1pt; color:var(--ink)}
+  tbody tr:last-child td{border-bottom:0.8pt solid var(--axis)}
+  .bst{font-weight:700}
+  .legend{font-size:8pt; color:var(--ink2); margin:0 0 6pt;
+     font-family:system-ui,sans-serif; text-align:left}
+  .legend span{margin-right:12pt; white-space:nowrap}
+  .sw{display:inline-block; width:8pt; height:8pt; border-radius:1.5pt;
+     vertical-align:-0.5pt; margin-right:3pt}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace; font-size:0.86em}
+  ol.refs{font-size:8.5pt; padding-left:16pt; margin:4pt 0; text-align:left}
+  ol.refs li{margin-bottom:4pt; line-height:1.42}
+  /* Identifiers are live hyperlinks in the PDF but print as body ink:
+     clickable without looking like web copy. */
+  ol.refs a{color:inherit; text-decoration:none}
+  .decl{font-size:9pt}
+  .decl p{margin:0 0 4pt}
+  .pb{break-before:page; page-break-before:always}
+  .note{background:var(--surface); border-left:2.5pt solid var(--axis);
+     padding:5pt 9pt; margin:8pt 0; font-size:9pt; text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <h1>The execution gap in agentic bioinformatics</h1>
+  <p class="subtitle">A fixed-model comparison of the Biomni, Galaxy and smarts.bio tool servers against an untooled control</p>
+  <p class="authors"><b>Nir Orpaz</b></p>
+  <p class="authors" style="color:#3a3a3a">smarts.bio, Tel Aviv, Israel · Correspondence: <a href="mailto:nir@smarts.bio">nir@smarts.bio</a></p>
+  <p class="authors" style="color:#3a3a3a">Study period: 2–12 November 2026 · Model: <code>claude-opus-5</code>, identical in all conditions</p>
+</div>
+
+<div class="abs">
+<h2>Abstract</h2>
+<p>Agentic bioinformatics systems pair a general-purpose language model with tools for retrieving data and executing analyses. How much that tool layer contributes is unresolved, because published comparisons vary the base model, the tool inventory and the agent architecture at once. Here we hold the model fixed and vary only tool access. The same model (<code>claude-opus-5</code>) and the same 48 frozen prompts, phrased as a scientist would ask them, were run against the tool-server endpoint of one of three bioinformatics platforms (Biomni, Galaxy or smarts.bio) or with no tools at all, the model's own shell, web-search and code-execution capabilities being disabled throughout. Answers were graded 0–3 by a judge blinded to condition, then audited against primary sources and identifier registries. Mean scores across 46 tasks per condition were 2.70 (smarts.bio), 2.30 (Biomni), 2.00 (Galaxy) and 1.00 (untooled), with acceptable-answer rates of 93.5%, 78.3%, 67.4% and 28.3%; raw scores over all 48 tasks gave 2.58, 2.15, 1.90 and 0.96, changing the magnitudes but not the ordering. The untooled control scored 0.00 on NGS pipelines and 0.33 on expression analysis, but reached 2.25 on database lookups against a pooled tool-enabled 2.38, so parametric knowledge substitutes for tool access where the answer is a stored fact. Of 126 identifiers emitted across all conditions, 124 resolved in their issuing registry; seven of ten fabrication flags raised by the automated judge were refuted on audit, and no judge-derived hallucination rate is therefore reported. Whether an analysis can be executed is the first-order determinant of performance. Differences among the tool-enabled conditions did not disappear: their spread, 2.00 to 2.70, is roughly half the 1.33-point gap to the control, so which tool-server endpoint is attached matters, though considerably less than whether one is attached at all. With one run per cell, these are differences between tool-server endpoints under a common driver rather than between the platforms as their designers deploy them.</p>
+</div>
+
+<p class="kw"><b>Keywords:</b> agentic systems; bioinformatics; tool use; large language models; benchmark; reproducibility; LLM-as-judge; computational biology</p>
+
+<h2>1. Introduction</h2>
+
+<p>A general-purpose language model can describe how to call variants from an alignment file, quantify expression or search a sequence database. Whether it can perform those operations is a separate question. Explanation draws on parametric knowledge; execution requires reading the user's files, invoking the relevant software and verifying what comes back. In practical scientific workflows the second capability may matter more than the first, because the answer depends on data the model has never seen.</p>
+
+<p>Benchmarks of language models in biology have moved steadily toward this distinction. LAB-Bench assembled over 2,400 questions covering practical research capabilities (literature retrieval, figure interpretation, database navigation and sequence manipulation), establishing the breadth of activity expected of a research assistant [1]. BixBench moved further toward computational biology, evaluating agents on real analytical scenarios requiring dataset exploration and multi-step work, and reported accuracy near 17% for frontier models on open-answer tasks, far below their performance on knowledge recall [2]. The gap between those two results is the gap between knowing and doing: the <i>execution gap</i>, and the subject of this paper.</p>
+
+<p>Systems that attempt to close it take different architectural positions. Biomni is a general-purpose biomedical agent that mines tools, databases and protocols from the literature across 25 domains and combines model reasoning with retrieval-augmented planning and code execution [3,4]. Galaxy, by contrast, is a mature workflow platform whose design goals centre on accessible, reproducible and collaborative analysis with explicit provenance, and which has recently added general-purpose GPU access and licensed-tool support [5]. smarts.bio, operated by this study's author and disclosed as such throughout (§8), takes a third position: a curated catalogue of hosted tools and multi-step pipelines that the model invokes directly, without writing or executing code on the user's behalf. These embody distinct traditions: agentic orchestration of heterogeneous tools, structured workflow execution in a shared environment, and direct invocation of a fixed tool catalogue. They also differ on an axis that cuts across those traditions: whether the system reaches a result by generating and running code, as Biomni does, or by calling pre-built tools, as the other two do. We selected these three as the clearest available instances of each position. Galaxy is the most widely used hosted analysis platform in the field. Biomni is among the most prominent agentic systems, and the only one of the three with a published evaluation in the primary literature [4]. smarts.bio pairs its catalogue with managed CPU and GPU compute.</p>
+
+<p>A parallel line of work argues that outcome correctness alone is an inadequate measure of an agent's scientific work. PromptBio-Bench evaluates end-to-end bioinformatics tasks against expert reference output files across 244 curated tasks [6]. BiomniBench scores the agent's full trajectory against task-specific expert rubrics, reporting that agents reliably ground claims in real sources yet fall short on method selection and biological interpretation, and that the agent harness shifts scores by more than the gap between successive model generations [7]. BioAgent Bench evaluates concrete workflow artifacts and robustness under controlled perturbations [8]. Each of these varies the model, the harness, or both.</p>
+
+<p>The present study asks a narrower question. Some of this work does isolate parts of it: Biomni's own evaluation compares an untooled base model, a coding agent, an ablated variant and the full system, which separates tool access from planning style within one architecture [3,4]. What is missing is a comparison that holds the base model and the task set fixed while varying only <i>which platform's tools are reachable</i>. Such a design isolates the contribution of the platform layer from that of the model driving it, and separates two questions: how much of bioinformatics is answerable from parametric knowledge alone, and, conditional on tool access mattering, how far apart the available platforms are. The first admits a decisive answer. The second does not, for the reasons set out in §5.</p>
+
+<p>The question is worth asking because it has a plausible null answer. A frontier model carries a great deal of biology in its parameters, and much of what a working scientist asks is a matter of record: what a gene does, which variant is pathogenic, what a structure looks like. If parametric knowledge were close to sufficient for the work actually brought to these systems, the platform layer would be a convenience rather than a capability, the measured differences between platforms would be small, and the sensible engineering conclusion would be to invest in models rather than in infrastructure. The untooled condition is included to test that proposition, not to furnish a floor: it is the null hypothesis of this study. Our results do not permit a single verdict on it. It holds on the categories where an answer is a stored fact, and fails comprehensively wherever an answer must be computed from data the model has never seen.</p>
+
+<h2>2. Methods</h2>
+
+<h3>2.1 Conditions</h3>
+<p>Four conditions, all running <code>claude-opus-5</code> at the provider's default sampling settings, identical across conditions, with an identical system prompt. No condition received platform-specific prompting. We note in §5.1 that this is a fairness guarantee and a confound simultaneously.</p>
+<p>Listed alphabetically, not by outcome. <i>Biomni</i>: hosted tool server. <i>Galaxy</i>: the <code>galaxy-mcp</code> server connected to a public Galaxy instance. <i>smarts.bio</i>: hosted tool server providing managed CPU and GPU compute and multi-step pipelines. <i>No tools</i>: the same model with every tool disabled, serving as the control. Results tables and figures order the conditions by outcome, as is conventional.</p>
+<p>In all four conditions the model's built-in shell access, web search, file reading and local code execution were disabled by launch flag rather than by instruction, and the harness configured exactly one tool server per run with no fallback. A tool-enabled condition could therefore act only through its own platform's server, and could not route around a weak platform by writing code; the control could answer only from parametric knowledge.</p>
+<p><b>What a condition is, precisely.</b> Each tool-enabled condition is a platform's <i>tool-server endpoint driven by a uniform external agent</i>, not that platform as its designers deploy it. Reaching a system this way exposes its tool inventory but not necessarily the planning and execution architecture built around those tools, a distinction that matters materially for Biomni and Galaxy and whose consequences are set out in §5.2. We use "condition" rather than "platform" throughout the Results for this reason, and the distinction holds for every between-condition number in §3.</p>
+
+<h3>2.2 Tasks</h3>
+<p>Forty-eight tasks spanning eleven categories were written and frozen before the first run. The frozen task file is released with the dataset; it was not held in version control at the time, so we cannot offer a commit hash as independent evidence of the freeze date. The freeze is therefore an assertion by the author, not a verifiable fact. Prompts are phrased as a working scientist would type them and never name a tool, so tool discovery is part of what is measured. Where deterministic ground truth existed it came either from synthetic fixtures with planted answers (six known single-nucleotide variant positions at defined coordinates and depths; exact feature counts) or from public registries (accessions, published binding affinities).</p>
+<p>Two tasks were found post hoc to be defective in their own material and are excluded from every condition: one prompt shipped without its input sequence, making the required identification impossible, and one supplied a GRCh37 variant file whose header declared GRCh38, so the promised consequence classifications were unreachable for any condition. Both defects are ours and were found by audit, not by inspection of results.</p>
+
+<p>Because the set is self-authored, its composition is a design choice rather than a sample, and it is therefore given in full (Figure 1) rather than summarised.</p>
+
+<figure>
+<p class="ftitle">Anatomy of the task set</p>
+<p class="fsub">The 46 tasks analysed under the primary specification, of 48 written and frozen. Panel A is ordered by category size; the counts in panels B to F each sum to 46.</p>
+<svg viewBox="0 0 700 456" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <text x="0" y="14" font-size="10" font-weight="700" fill="#111">A</text>
+  <text x="14" y="14" font-size="10" font-weight="700" fill="#111">Task categories</text>
+  <text x="104" y="14" font-size="8.8" fill="#6b6b6b">and what the agent is asked to produce</text>
+
+  <g>
+  <text x="152" y="43" text-anchor="end" font-size="10" fill="#111">Database lookups</text>
+  <text x="174" y="43" text-anchor="end" font-size="8.5" fill="#6b6b6b">8</text>
+  <rect x="182" y="33" width="120" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="43" font-size="8.8" fill="#52514e">an accession, a locus, an allele frequency, a clinical interpretation</text>
+
+  <text x="152" y="66" text-anchor="end" font-size="10" fill="#111">Sequence analysis</text>
+  <text x="174" y="66" text-anchor="end" font-size="8.5" fill="#6b6b6b">6</text>
+  <rect x="182" y="56" width="90" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="66" font-size="8.8" fill="#52514e">GC content, open reading frames, translation, alignment, folding energy</text>
+
+  <text x="152" y="89" text-anchor="end" font-size="10" fill="#111">NGS pipelines</text>
+  <text x="174" y="89" text-anchor="end" font-size="8.5" fill="#6b6b6b">6</text>
+  <rect x="182" y="79" width="90" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="89" font-size="8.8" fill="#52514e">a QC verdict, an alignment rate, called variants, gene counts, peaks</text>
+
+  <text x="152" y="112" text-anchor="end" font-size="10" fill="#111">Protein design</text>
+  <text x="174" y="112" text-anchor="end" font-size="8.5" fill="#6b6b6b">6</text>
+  <rect x="182" y="102" width="90" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="112" font-size="8.8" fill="#52514e">designed sequences and structures, a predicted affinity or stability change</text>
+
+  <text x="152" y="135" text-anchor="end" font-size="10" fill="#111">Structure &amp; annotation</text>
+  <text x="174" y="135" text-anchor="end" font-size="8.5" fill="#6b6b6b">4</text>
+  <rect x="182" y="125" width="60" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="135" font-size="8.8" fill="#52514e">secondary structure, pockets, experimental method, model availability</text>
+
+  <text x="152" y="158" text-anchor="end" font-size="10" fill="#111">Everyday multi-step</text>
+  <text x="174" y="158" text-anchor="end" font-size="8.5" fill="#6b6b6b">4</text>
+  <rect x="182" y="148" width="60" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="158" font-size="8.8" fill="#52514e">a judgement made at the bench before ordering reagents</text>
+
+  <text x="152" y="181" text-anchor="end" font-size="10" fill="#111">Expression analysis</text>
+  <text x="174" y="181" text-anchor="end" font-size="8.5" fill="#6b6b6b">3</text>
+  <rect x="182" y="171" width="45" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="181" font-size="8.8" fill="#52514e">differentially expressed genes, cell clusters, a shared pathway</text>
+
+  <text x="152" y="204" text-anchor="end" font-size="10" fill="#111">Small molecules</text>
+  <text x="174" y="204" text-anchor="end" font-size="8.5" fill="#6b6b6b">3</text>
+  <rect x="182" y="194" width="45" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="204" font-size="8.8" fill="#52514e">drug-likeness, analogues, a compound's known targets</text>
+
+  <text x="152" y="227" text-anchor="end" font-size="10" fill="#111">Sequence search (BLAST)</text>
+  <text x="174" y="227" text-anchor="end" font-size="8.5" fill="#6b6b6b">2</text>
+  <rect x="182" y="217" width="30" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="227" font-size="8.8" fill="#52514e">the coordinates or the source organism of an unknown sequence</text>
+
+  <text x="152" y="250" text-anchor="end" font-size="10" fill="#111">Variant interpretation</text>
+  <text x="174" y="250" text-anchor="end" font-size="8.5" fill="#6b6b6b">2</text>
+  <rect x="182" y="240" width="30" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="250" font-size="8.8" fill="#52514e">what a clinical variant means, and which variants to follow up</text>
+
+  <text x="152" y="273" text-anchor="end" font-size="10" fill="#111">Literature &amp; evidence</text>
+  <text x="174" y="273" text-anchor="end" font-size="8.5" fill="#6b6b6b">2</text>
+  <rect x="182" y="263" width="30" height="9" rx="2" fill="#3987e5"/>
+  <text x="312" y="273" font-size="8.8" fill="#52514e">recent papers and active trials, with citations</text>
+  </g>
+
+  <line x1="0" y1="292" x2="700" y2="292" stroke="#e1e0d9" stroke-width="1"/>
+
+  <!-- B: input -->
+  <text x="0" y="317" font-size="9.5" font-weight="700" fill="#111">B</text>
+  <text x="13" y="317" font-size="9.3" fill="#111">Input the agent must open</text>
+  <rect x="200" y="307" width="178" height="13" rx="2" fill="#3987e5"/>
+  <rect x="380" y="307" width="280" height="13" rx="2" fill="#dfe3e7"/>
+  <text x="208" y="317" font-size="8.6" fill="#fff">Workspace data file</text>
+  <text x="370" y="317" text-anchor="end" font-size="8.6" font-weight="700" fill="#fff">18</text>
+  <text x="388" y="317" font-size="8.6" fill="#3a3a3a">No file: a public accession or the prompt text</text>
+  <text x="652" y="317" text-anchor="end" font-size="8.6" font-weight="700" fill="#3a3a3a">28</text>
+
+  <!-- C: difficulty -->
+  <text x="0" y="347" font-size="9.5" font-weight="700" fill="#111">C</text>
+  <text x="13" y="347" font-size="9.3" fill="#111">Difficulty as authored</text>
+  <rect x="200" y="337" width="98" height="13" rx="2" fill="#9ec5f4"/>
+  <rect x="300" y="337" width="238" height="13" rx="2" fill="#3987e5"/>
+  <rect x="540" y="337" width="120" height="13" rx="2" fill="#184f95"/>
+  <text x="208" y="347" font-size="8.6" fill="#1c3f66">Level 1</text>
+  <text x="290" y="347" text-anchor="end" font-size="8.6" font-weight="700" fill="#1c3f66">10</text>
+  <text x="308" y="347" font-size="8.6" fill="#fff">Level 2</text>
+  <text x="530" y="347" text-anchor="end" font-size="8.6" font-weight="700" fill="#fff">24</text>
+  <text x="548" y="347" font-size="8.6" fill="#fff">Level 3</text>
+  <text x="652" y="347" text-anchor="end" font-size="8.6" font-weight="700" fill="#fff">12</text>
+
+  <!-- D: grading -->
+  <text x="0" y="377" font-size="9.5" font-weight="700" fill="#111">D</text>
+  <text x="13" y="377" font-size="9.3" fill="#111">Grading method</text>
+  <rect x="200" y="367" width="208" height="13" rx="2" fill="#3987e5"/>
+  <rect x="410" y="367" width="250" height="13" rx="2" fill="#dfe3e7"/>
+  <text x="208" y="377" font-size="8.6" fill="#fff">Declared machine-checkable answer</text>
+  <text x="400" y="377" text-anchor="end" font-size="8.6" font-weight="700" fill="#fff">21</text>
+  <text x="418" y="377" font-size="8.6" fill="#3a3a3a">Blinded rubric alone</text>
+  <text x="652" y="377" text-anchor="end" font-size="8.6" font-weight="700" fill="#3a3a3a">25</text>
+
+  <!-- E: persona -->
+  <text x="0" y="407" font-size="9.5" font-weight="700" fill="#111">E</text>
+  <text x="13" y="407" font-size="9.3" fill="#111">Written in the voice of</text>
+  <rect x="200" y="397" width="298" height="13" rx="2" fill="#3987e5"/>
+  <rect x="500" y="397" width="160" height="13" rx="2" fill="#dfe3e7"/>
+  <text x="208" y="407" font-size="8.6" fill="#fff">A bioinformatician</text>
+  <text x="490" y="407" text-anchor="end" font-size="8.6" font-weight="700" fill="#fff">30</text>
+  <text x="508" y="407" font-size="8.6" fill="#3a3a3a">A biologist</text>
+  <text x="652" y="407" text-anchor="end" font-size="8.6" font-weight="700" fill="#3a3a3a">16</text>
+
+  <!-- F: execution shape -->
+  <text x="0" y="437" font-size="9.5" font-weight="700" fill="#111">F</text>
+  <text x="13" y="437" font-size="9.3" fill="#111">Execution shape</text>
+  <rect x="200" y="427" width="118" height="13" rx="2" fill="#3987e5"/>
+  <rect x="320" y="427" width="340" height="13" rx="2" fill="#dfe3e7"/>
+  <text x="208" y="437" font-size="8.6" fill="#fff">Long-running</text>
+  <text x="310" y="437" text-anchor="end" font-size="8.6" font-weight="700" fill="#fff">12</text>
+  <text x="328" y="437" font-size="8.6" fill="#3a3a3a">Single exchange</text>
+  <text x="652" y="437" text-anchor="end" font-size="8.6" font-weight="700" fill="#3a3a3a">34</text>
+</svg>
+<figcaption><span class="fnum">Figure 1 |</span> Five of the eleven categories hold three tasks or fewer, which is the origin of the category-level uncertainty discussed in §3.3, and just over half the set rests on the blinded rubric alone. <b>A</b>, the categories by size, with what an answer has to contain. <b>B</b>, whether answering requires opening a file the user supplied, as against a public accession or a sequence pasted into the prompt. <b>C</b>, difficulty as assigned when the set was frozen, which is an expectation and not an observed property. <b>D</b>, whether the task declares a machine-checkable answer type, as against resting on the blinded rubric alone. <b>E</b>, the persona each prompt was written for. <b>F</b>, whether the task was expected to submit a job and be polled to completion.</figcaption>
+</figure>
+
+<h3>2.3 Execution</h3>
+<p>Each run was a single headless model invocation with one tool server attached. Long-running jobs were handled by resuming the same session at a fixed interval with a neutral check-in message until an answer arrived or the task's pre-specified timeout elapsed. Timeout budgets were set per task before any run and were identical across conditions. Wall time is measured from first prompt to final answer. A task that timed out scores 0 on the intention-to-complete principle: the user received nothing. Failures of our own measurement harness are excluded rather than scored. Platform-side failures are not excluded: a run blocked by an exhausted compute quota, a saturated rate limit or an unavailable service is scored on what the user actually received, on the same principle that governs timeouts.</p>
+
+<h3>2.4 Grading and audit</h3>
+<p>Twenty-one of the 46 tasks in the primary specification declare a machine-checkable answer type (two exact-match, one numeric-tolerance, eighteen set-membership), and twenty-two of the 48 as authored. Declaring one is not the same as receiving one: of the 84 primary runs on those tasks, 74 returned an answer the check could read, while three timed out and seven answered in a form the check could not parse. The remaining 25 tasks, and 110 of the 184 primary runs, rest on the automated judge alone, to which the reliability findings reported below apply directly.</p>
+<p>All answers were additionally graded by a <i>blinded</i> rubric judge on a 0–3 scale: 3, correct and sourced; 2, correct with gaps; 1, partially correct; 0, wrong, unjustified refusal, or no usable answer. The judge received each answer with platform and tool names stripped, together with the rubric and ground truth, and never saw which condition produced it. The judge was <code>claude-opus-5</code> at default sampling, the same model that generated the answers. Because that model produced every condition's output, self-preference is symmetric across conditions and cannot order them, but it may compress or expand the scale uniformly, and an independent judge family is required before these scores are treated as absolute.</p>
+<p>Because an automated judge is itself an instrument with unknown error characteristics [9], every graded answer was re-checked against primary sources in a separate audit layer, reported alongside the judge's raw output rather than silently replacing it. Of ten hallucination flags the judge raised, seven were refuted against primary sources. In one instance the judge called a PubMed identifier fabricated when it was the cited structure's own primary citation. We therefore do not report a hallucination rate derived from the judge. Judge scores are never edited in place; corrections exist only in the audit layer, so both readings remain inspectable.</p>
+<p>Two limits of the audit must be stated. It was performed by the authoring party and was not blinded to condition. And the study design called for an independent human to re-check a random 20% of answers plus every judge–audit disagreement, with an agreement rate reported; that human verification was not carried out, so no inter-rater statistic is available and the audit layer is itself unaudited.</p>
+
+<h3>2.5 Analysis specifications</h3>
+<p>Two specifications are reported throughout, because each is defensible and the choice between them affects the magnitudes. Neither was specified before data collection; both were constructed during analysis. No pre-analysis plan was registered, and both specifications are therefore reported in full rather than one being selected.</p>
+<p><b>Primary (audit-corrected).</b> The two defective tasks of §2.2 are excluded from all conditions, giving n = 46 in every condition; audit corrections are applied where the audit disagreed with the judge; timeouts score 0. No condition carries an arm-specific exclusion. An earlier version of this analysis excluded one smarts.bio cell in which a compute quota was exhausted mid-run; that run nonetheless returned an answer and was graded 2, so it is retained. Excluding it would have removed the single task on which smarts.bio was outscored by both comparator conditions, while comparator runs that returned nothing were scored 0, applying to one condition an exclusion standard not applied to the others.</p>
+<p><b>Sensitivity (raw).</b> All 48 task records are retained in every condition, no audit corrections are applied, and timeouts score 0. This specification requires no audit material and is reproducible from the run-level file alone.</p>
+<p>An audit correction is applied only to a run that started on or before that audit's date, so a cell re-measured after being audited carries its own score rather than a stale correction. This rule was devised during analysis, not specified in advance, and is therefore a post-hoc choice. Its largest single effect falls on a CRISPR guide-design task, where it discards an audit correction that would have raised the authoring condition's score from 1 to 3. Three repetition-2 records exist for three control-condition tasks only; because they do not form a balanced repeated-measures design, they are excluded from both specifications.</p>
+
+<h3>2.6 Statistical approach</h3>
+<p>The analysis is descriptive. Each task–condition cell has one primary run, so the data cannot estimate run-to-run stochastic variability. We report means, score distributions, completion rates and paired task-level win/tie/loss counts. The two exact sign tests in §3.7 are the only inferential statistics reported, and §3.7 states what they can and cannot support where the numbers appear: they test whether two conditions differed on these particular tasks, not whether one platform is reliably better than another. No confidence intervals are reported, and this is a design limit rather than an omission. An interval around these means would treat the task set as a random sample drawn from some wider population of bioinformatics tasks. It is not one: it is self-authored, and its distribution across categories is a choice (§5.1). An interval computed on that basis would express a precision the design cannot support. Standard deviations, where given, describe dispersion across the fixed task set and are not standard errors.</p>
+
+<h3>2.7 Relation to published benchmarks</h3>
+<p>This is an execution-oriented, fixed-model comparison of tool-server endpoints, not a leaderboard of models and not a comparison of the platforms as deployed (§2.1). It is therefore not directly comparable to LAB-Bench [1], BixBench [2], PromptBio-Bench [6], BiomniBench [7] or BioAgent Bench [8], all of which vary the model or the harness and use different task sets and scoring protocols. Their reported scores and ours should not be placed on a common axis. In particular, the score here summarises the judged outcome of a run and is not a measure of workflow validity, process quality or robustness, each of which those frameworks address directly and this one does not. Where §4 draws on a published result from that literature, it compares the <i>direction</i> of an effect and never its magnitude, which is the only comparison these differing protocols support.</p>
+
+<h2>3. Results</h2>
+
+<p>The study's central observation is stated first, because the remaining results are decompositions of it. Across all 46 tasks the untooled control averaged 1.00 and the three tool-enabled conditions pooled averaged 2.33, but that single difference is an average of two unlike regimes (Figure 2). Where a task asks for a fact the model has read, the gap is negligible. Where a task asks for a computation over the user's own data, the gap is most of the scale.</p>
+
+<figure>
+<p class="ftitle">The execution gap, by task category</p>
+<p class="fsub">Primary specification, 46 tasks. Each line spans the untooled control's mean score and the pooled mean of the three tool-enabled conditions; the length of the line is the execution gap. Sorted by gap, largest first.</p>
+<svg viewBox="0 0 700 452" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <!-- gridlines at 0,1,2,3 -->
+  <line x1="215" y1="34" x2="215" y2="410" stroke="#e1e0d9" stroke-width="1"/>
+  <line x1="363.33" y1="34" x2="363.33" y2="410" stroke="#e1e0d9" stroke-width="1"/>
+  <line x1="660" y1="34" x2="660" y2="410" stroke="#e1e0d9" stroke-width="1"/>
+  <!-- acceptable-answer threshold -->
+  <line x1="511.67" y1="34" x2="511.67" y2="410" stroke="#898781" stroke-width="1" stroke-dasharray="3 3"/>
+
+  <text x="215" y="26" text-anchor="middle" font-size="9" fill="#6b6b6b">0</text>
+  <text x="363.33" y="26" text-anchor="middle" font-size="9" fill="#6b6b6b">1</text>
+  <text x="511.67" y="26" text-anchor="middle" font-size="9" fill="#6b6b6b">2</text>
+  <text x="660" y="26" text-anchor="middle" font-size="9" fill="#6b6b6b">3</text>
+  <text x="692" y="26" text-anchor="end" font-size="9" fill="#6b6b6b">gap</text>
+  <text x="20" y="26" font-size="9" fill="#6b6b6b">mean task score</text>
+
+  <g font-size="11">
+  <!-- NGS pipelines -->
+  <text x="156" y="52" text-anchor="end" fill="#111">NGS pipelines</text><text x="178" y="52" text-anchor="end" font-size="9" fill="#6b6b6b">n=6</text>
+  <line x1="215" y1="48" x2="618.79" y2="48" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="215" cy="48" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="618.79" cy="48" r="5.5" fill="#2a78d6"/>
+  <text x="206" y="52" text-anchor="end" font-size="9.5" fill="#52514e">0.00</text>
+  <text x="627.79" y="52" font-size="9.5" fill="#0b0b0b">2.72</text>
+  <text x="692" y="52" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">2.72</text>
+
+  <!-- Expression analysis -->
+  <text x="156" y="83" text-anchor="end" fill="#111">Expression analysis</text><text x="178" y="83" text-anchor="end" font-size="9" fill="#6b6b6b">n=3</text>
+  <line x1="264.44" y1="79" x2="627.04" y2="79" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="264.44" cy="79" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="627.04" cy="79" r="5.5" fill="#2a78d6"/>
+  <text x="255.44" y="83" text-anchor="end" font-size="9.5" fill="#52514e">0.33</text>
+  <text x="636.04" y="83" font-size="9.5" fill="#0b0b0b">2.78</text>
+  <text x="692" y="83" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">2.44</text>
+
+  <!-- Sequence analysis -->
+  <text x="156" y="114" text-anchor="end" fill="#111">Sequence analysis</text><text x="178" y="114" text-anchor="end" font-size="9" fill="#6b6b6b">n=6</text>
+  <line x1="239.73" y1="110" x2="561.11" y2="110" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="239.73" cy="110" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="561.11" cy="110" r="5.5" fill="#2a78d6"/>
+  <text x="230.73" y="114" text-anchor="end" font-size="9.5" fill="#52514e" stroke="#fff" stroke-width="3" paint-order="stroke">0.17</text>
+  <text x="570.11" y="114" font-size="9.5" fill="#0b0b0b">2.33</text>
+  <text x="692" y="114" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">2.17</text>
+
+  <!-- Structure & annotation -->
+  <text x="156" y="145" text-anchor="end" fill="#111">Structure &amp; annotation</text><text x="178" y="145" text-anchor="end" font-size="9" fill="#6b6b6b">n=4</text>
+  <line x1="289.17" y1="141" x2="610.56" y2="141" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="289.17" cy="141" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="610.56" cy="141" r="5.5" fill="#2a78d6"/>
+  <text x="280.17" y="145" text-anchor="end" font-size="9.5" fill="#52514e">0.50</text>
+  <text x="619.56" y="145" font-size="9.5" fill="#0b0b0b">2.67</text>
+  <text x="692" y="145" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">2.17</text>
+
+  <!-- Small molecules -->
+  <text x="156" y="176" text-anchor="end" fill="#111">Small molecules</text><text x="178" y="176" text-anchor="end" font-size="9" fill="#6b6b6b">n=3</text>
+  <line x1="363.33" y1="172" x2="594.08" y2="172" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="363.33" cy="172" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="594.08" cy="172" r="5.5" fill="#2a78d6"/>
+  <text x="354.33" y="176" text-anchor="end" font-size="9.5" fill="#52514e">1.00</text>
+  <text x="603.08" y="176" font-size="9.5" fill="#0b0b0b">2.56</text>
+  <text x="692" y="176" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">1.56</text>
+
+  <!-- Sequence search (BLAST) -->
+  <text x="156" y="207" text-anchor="end" fill="#111">Sequence search (BLAST)</text><text x="178" y="207" text-anchor="end" font-size="9" fill="#6b6b6b">n=2</text>
+  <line x1="289.17" y1="203" x2="486.94" y2="203" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="289.17" cy="203" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="486.94" cy="203" r="5.5" fill="#2a78d6"/>
+  <text x="280.17" y="207" text-anchor="end" font-size="9.5" fill="#52514e">0.50</text>
+  <text x="495.94" y="207" font-size="9.5" fill="#0b0b0b">1.83</text>
+  <text x="692" y="207" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">1.33</text>
+
+  <!-- Literature & evidence -->
+  <text x="156" y="238" text-anchor="end" fill="#111">Literature &amp; evidence</text><text x="178" y="238" text-anchor="end" font-size="9" fill="#6b6b6b">n=2</text>
+  <line x1="363.33" y1="234" x2="486.94" y2="234" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="363.33" cy="234" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="486.94" cy="234" r="5.5" fill="#2a78d6"/>
+  <text x="354.33" y="238" text-anchor="end" font-size="9.5" fill="#52514e">1.00</text>
+  <text x="495.94" y="238" font-size="9.5" fill="#0b0b0b">1.83</text>
+  <text x="692" y="238" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">0.83</text>
+
+  <!-- Protein design -->
+  <text x="156" y="269" text-anchor="end" fill="#111">Protein design</text><text x="178" y="269" text-anchor="end" font-size="9" fill="#6b6b6b">n=6</text>
+  <line x1="388.06" y1="265" x2="495.19" y2="265" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="388.06" cy="265" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="495.19" cy="265" r="5.5" fill="#2a78d6"/>
+  <text x="379.06" y="269" text-anchor="end" font-size="9.5" fill="#52514e">1.17</text>
+  <text x="504.19" y="269" font-size="9.5" fill="#0b0b0b">1.89</text>
+  <text x="692" y="269" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">0.72</text>
+
+  <!-- Variant interpretation -->
+  <text x="156" y="300" text-anchor="end" fill="#111">Variant interpretation</text><text x="178" y="300" text-anchor="end" font-size="9" fill="#6b6b6b">n=2</text>
+  <line x1="511.67" y1="296" x2="585.83" y2="296" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="511.67" cy="296" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="585.83" cy="296" r="5.5" fill="#2a78d6"/>
+  <text x="502.67" y="300" text-anchor="end" font-size="9.5" fill="#52514e">2.00</text>
+  <text x="594.83" y="300" font-size="9.5" fill="#0b0b0b">2.50</text>
+  <text x="692" y="300" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">0.50</text>
+
+  <!-- Everyday multi-step -->
+  <text x="156" y="331" text-anchor="end" fill="#111">Everyday multi-step</text><text x="178" y="331" text-anchor="end" font-size="9" fill="#6b6b6b">n=4</text>
+  <line x1="474.58" y1="327" x2="499.31" y2="327" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="474.58" cy="327" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="499.31" cy="327" r="5.5" fill="#2a78d6"/>
+  <text x="465.58" y="331" text-anchor="end" font-size="9.5" fill="#52514e">1.75</text>
+  <text x="508.31" y="331" font-size="9.5" fill="#0b0b0b">1.92</text>
+  <text x="692" y="331" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">0.17</text>
+
+  <!-- Database lookups -->
+  <text x="156" y="362" text-anchor="end" fill="#111">Database lookups</text><text x="178" y="362" text-anchor="end" font-size="9" fill="#6b6b6b">n=8</text>
+  <line x1="548.75" y1="358" x2="567.29" y2="358" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="548.75" cy="358" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="567.29" cy="358" r="5.5" fill="#2a78d6"/>
+  <text x="539.75" y="362" text-anchor="end" font-size="9.5" fill="#52514e">2.25</text>
+  <text x="576.29" y="362" font-size="9.5" fill="#0b0b0b">2.38</text>
+  <text x="692" y="362" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">0.12</text>
+
+  <!-- all tasks -->
+  <line x1="20" y1="380" x2="692" y2="380" stroke="#c3c2b7" stroke-width="1"/>
+  <text x="156" y="400" text-anchor="end" fill="#111" font-weight="700">All tasks</text><text x="178" y="400" text-anchor="end" font-size="9" fill="#6b6b6b">46</text>
+  <line x1="363.33" y1="396" x2="561.11" y2="396" stroke="#c3c2b7" stroke-width="2.5"/>
+  <circle cx="363.33" cy="396" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <circle cx="561.11" cy="396" r="5.5" fill="#2a78d6"/>
+  <text x="354.33" y="400" text-anchor="end" font-size="9.5" fill="#52514e">1.00</text>
+  <text x="570.11" y="400" font-size="9.5" fill="#0b0b0b">2.33</text>
+  <text x="692" y="400" text-anchor="end" font-size="9.5" fill="#0b0b0b" font-weight="700">1.33</text>
+  </g>
+
+  <text x="511.67" y="424" text-anchor="middle" font-size="8.5" fill="#6b6b6b">acceptable answer (score ≥ 2)</text>
+
+  <!-- legend -->
+  <circle cx="26" cy="441" r="5" fill="#fff" stroke="#eb6834" stroke-width="2.2"/>
+  <text x="38" y="445" font-size="9.5" fill="#52514e">No tools (control)</text>
+  <circle cx="156" cy="441" r="5.5" fill="#2a78d6"/>
+  <text x="168" y="445" font-size="9.5" fill="#52514e">Tool-enabled, three conditions pooled</text>
+</svg>
+<figcaption><span class="fnum">Figure 2 |</span> Tool access is worth almost nothing on the categories at the bottom of the figure and almost the entire scale on those at the top. Each line spans the untooled control mean (open circle) and the pooled tool-enabled mean for one task category. Short lines are the least reliable rows, for the reasons given in the text.</figcaption>
+</figure>
+
+<h3>3.1 Overall task performance</h3>
+<p>Every tool-enabled condition outperformed the control on both mean score and acceptable-task proportion, under both specifications. The ordering of the four conditions is identical in the two analyses; only the magnitudes shift (Figure 3, Table 1).</p>
+<p>Because the six protein-design tasks of §3.4 are the category most likely to favour the authoring condition's managed GPU catalogue, the primary means were recomputed with that category removed. Over the remaining 40 tasks they are 2.73 (smarts.bio), 2.38 (Biomni), 2.10 (Galaxy) and 0.97 (control), with acceptable rates of 92.5%, 82.5%, 72.5% and 30.0%. The ordering is unchanged, and the smarts.bio mean rises by 0.03 rather than falling, because it scores 2.50 on the design tasks against 2.73 elsewhere. The category therefore does not generate the reported margin.</p>
+
+<figure>
+<p class="ftitle">Mean task score by condition, under both analysis specifications</p>
+<p class="fsub">Scale 0–3. Primary = audit-corrected, 46 tasks in every condition. Sensitivity = raw judge scores, all 48 tasks. Timeouts score 0 in both.</p>
+<p class="legend">
+  <span><i class="sw" style="background:#2a78d6"></i>Primary (audit-corrected)</span>
+  <span><i class="sw" style="background:#9ec5f4"></i>Sensitivity (raw, 48 tasks)</span>
+</p>
+<svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <line x1="150" y1="20" x2="150" y2="206" stroke="#b0b0ac" stroke-width="1"/>
+  <line x1="300" y1="20" x2="300" y2="206" stroke="#e3e3e0" stroke-width="1"/>
+  <line x1="450" y1="20" x2="450" y2="206" stroke="#e3e3e0" stroke-width="1"/>
+  <line x1="600" y1="20" x2="600" y2="206" stroke="#e3e3e0" stroke-width="1"/>
+  <text x="150" y="222" text-anchor="middle" font-size="11" fill="#6b6b6b">0</text>
+  <text x="300" y="222" text-anchor="middle" font-size="11" fill="#6b6b6b">1</text>
+  <text x="450" y="222" text-anchor="middle" font-size="11" fill="#6b6b6b">2</text>
+  <text x="600" y="222" text-anchor="middle" font-size="11" fill="#6b6b6b">3</text>
+  <text x="375" y="241" text-anchor="middle" font-size="11" fill="#3a3a3a">mean task score (0–3)</text>
+
+  <text x="142" y="35" text-anchor="end" font-size="12" fill="#111">smarts.bio</text>
+  <rect x="150" y="24" width="405" height="14" rx="3" fill="#2a78d6"/>
+  <text x="561" y="35" font-size="11" fill="#111" font-weight="700">2.70</text>
+  <rect x="150" y="40" width="387" height="14" rx="3" fill="#9ec5f4"/>
+  <text x="543" y="51" font-size="11" fill="#3a3a3a">2.58</text>
+
+  <text x="142" y="80" text-anchor="end" font-size="12" fill="#111">Biomni</text>
+  <rect x="150" y="69" width="345" height="14" rx="3" fill="#2a78d6"/>
+  <text x="501" y="80" font-size="11" fill="#111" font-weight="700">2.30</text>
+  <rect x="150" y="85" width="322.5" height="14" rx="3" fill="#9ec5f4"/>
+  <text x="478" y="96" font-size="11" fill="#3a3a3a">2.15</text>
+
+  <text x="142" y="125" text-anchor="end" font-size="12" fill="#111">Galaxy</text>
+  <rect x="150" y="114" width="300" height="14" rx="3" fill="#2a78d6"/>
+  <text x="456" y="125" font-size="11" fill="#111" font-weight="700">2.00</text>
+  <rect x="150" y="130" width="285" height="14" rx="3" fill="#9ec5f4"/>
+  <text x="441" y="141" font-size="11" fill="#3a3a3a">1.90</text>
+
+  <text x="142" y="170" text-anchor="end" font-size="12" fill="#111">No tools</text>
+  <rect x="150" y="159" width="150" height="14" rx="3" fill="#2a78d6"/>
+  <text x="306" y="170" font-size="11" fill="#111" font-weight="700">1.00</text>
+  <rect x="150" y="175" width="144" height="14" rx="3" fill="#9ec5f4"/>
+  <text x="300" y="186" font-size="11" fill="#3a3a3a">0.96</text>
+
+  <line x1="150" y1="206" x2="640" y2="206" stroke="#b0b0ac" stroke-width="1"/>
+</svg>
+<figcaption><span class="fnum">Figure 3 |</span> The separation between the control condition and every tool-enabled condition exceeds the entire span across the three tool-enabled conditions. The two specifications differ by 0.04–0.15 points per condition and do not reorder them, so the result is not an artefact of the audit layer or of the two task exclusions.</figcaption>
+</figure>
+
+<table>
+<caption><b>Table 1 |</b> Primary (audit-corrected) results, with the raw sensitivity analysis in the final two columns.</caption>
+<thead><tr><th>Condition</th><th>n</th><th>Mean</th><th>SD</th><th>Score ≥2</th><th>Perfect (3)</th><th>Zeros</th><th>Raw mean</th><th>Raw ≥2</th></tr></thead>
+<tbody>
+<tr><td>smarts.bio</td><td>46</td><td>2.70</td><td>0.66</td><td>93.5%</td><td>36</td><td>1</td><td>2.58</td><td>89.6%</td></tr>
+<tr><td>Biomni</td><td>46</td><td>2.30</td><td>1.09</td><td>78.3%</td><td>30</td><td>6</td><td>2.15</td><td>72.9%</td></tr>
+<tr><td>Galaxy</td><td>46</td><td>2.00</td><td>1.17</td><td>67.4%</td><td>23</td><td>8</td><td>1.90</td><td>64.6%</td></tr>
+<tr><td>No tools</td><td>46</td><td>1.00</td><td>1.05</td><td>28.3%</td><td>6</td><td>19</td><td>0.96</td><td>27.1%</td></tr>
+</tbody>
+</table>
+
+<p>The control condition answered 28.3% of tasks acceptably and scored zero on 19 of 46. Its failures are not marginal degradations. Transcript inspection shows the characteristic failure mode of an untooled model asked to compute: it produces a plausible value rather than a retrieved one. In one run it emitted a simulated shell command followed by a fabricated directory listing (complete with file sizes, permissions and timestamps) and then reasoned from that invented observation as if it were a measurement.</p>
+
+<h3>3.2 Distribution of scores</h3>
+<p>Means can conceal whether a condition fails softly or catastrophically. The distributions differ in shape, not only in central tendency (Figure 4): the control's mass sits at 0 and 1, while every tool-enabled condition's mass sits at 3.</p>
+
+<figure>
+<p class="ftitle">Distribution of rubric scores by condition</p>
+<p class="fsub">Primary specification. Counts of tasks at each rubric level; timeouts included at score 0.</p>
+<p class="legend">
+  <span><i class="sw" style="background:#9ec5f4"></i>0, wrong or no usable answer</span>
+  <span><i class="sw" style="background:#6da7ec"></i>1, partially correct</span>
+  <span><i class="sw" style="background:#256abf"></i>2, correct with gaps</span>
+  <span><i class="sw" style="background:#0d366b"></i>3, correct and sourced</span>
+</p>
+<svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <text x="142" y="32" text-anchor="end" font-size="12" fill="#111">smarts.bio</text>
+  <rect x="150" y="20" width="12.7" height="20" rx="2" fill="#9ec5f4"/>
+  <rect x="164.7" y="20" width="25.5" height="20" fill="#6da7ec"/>
+  <rect x="192.2" y="20" width="89.2" height="20" fill="#256abf"/>
+  <rect x="283.4" y="20" width="458.6" height="20" rx="2" fill="#0d366b"/>
+  <text x="480" y="34" font-size="10" fill="#fff" font-weight="600">36 scored 3</text>
+
+  <text x="142" y="74" text-anchor="end" font-size="12" fill="#111">Biomni</text>
+  <rect x="150" y="62" width="69.9" height="20" rx="2" fill="#9ec5f4"/>
+  <rect x="221.9" y="62" width="46.6" height="20" fill="#6da7ec"/>
+  <rect x="270.5" y="62" width="69.9" height="20" fill="#256abf"/>
+  <rect x="342.4" y="62" width="349.6" height="20" rx="2" fill="#0d366b"/>
+  <text x="495" y="76" font-size="10" fill="#fff" font-weight="600">30 scored 3</text>
+
+  <text x="142" y="116" text-anchor="end" font-size="12" fill="#111">Galaxy</text>
+  <rect x="150" y="104" width="93.2" height="20" rx="2" fill="#9ec5f4"/>
+  <rect x="245.2" y="104" width="81.5" height="20" fill="#6da7ec"/>
+  <rect x="328.7" y="104" width="93.2" height="20" fill="#256abf"/>
+  <rect x="423.9" y="104" width="268" height="20" rx="2" fill="#0d366b"/>
+  <text x="525" y="118" font-size="10" fill="#fff" font-weight="600">23 scored 3</text>
+
+  <text x="142" y="158" text-anchor="end" font-size="12" fill="#111">No tools</text>
+  <rect x="150" y="146" width="221.3" height="20" rx="2" fill="#9ec5f4"/>
+  <rect x="373.3" y="146" width="163.1" height="20" fill="#6da7ec"/>
+  <rect x="538.4" y="146" width="81.5" height="20" fill="#256abf"/>
+  <rect x="621.9" y="146" width="69.9" height="20" rx="2" fill="#0d366b"/>
+  <text x="222" y="160" font-size="10" fill="#111" font-weight="600">19 scored 0</text>
+</svg>
+<figcaption><span class="fnum">Figure 4 |</span> The untooled model is not producing slightly worse analyses; on most tasks it is not producing analyses. All four conditions have n = 46, so bar lengths are directly comparable. Under the raw specification the same pattern holds with 3, 8, 10 and 21 zeros respectively.</figcaption>
+</figure>
+
+<h3>3.3 Performance by task category</h3>
+<p>The categorical breakdown (Figure 5) is the study's central evidence, because it shows <i>where</i> tool access matters and where it does not. The division is not by difficulty but by <i>where the answer lives</i>: database lookups and variant interpretation ask for facts the model has already read, while NGS pipelines and expression analysis ask for a computation over data the model has never seen.</p>
+<p>Category means carry substantial uncertainty. Five of the eleven categories contain only two or three tasks, where a single task moves a mean by 1.0 to 1.5, so no gap should be read to two-decimal precision. Only database lookups, sequence analysis, NGS pipelines and protein design contain enough tasks to support even informal comparison between conditions. A gap of 0.12 on an eight-task category and a gap of 0.17 on a four-task category are both well inside the noise this design can resolve, and neither is evidence that tools help a little. The pooled tool-enabled mean in Figure 2 averages three conditions that differ substantially from one another (Figure 3): it isolates the tooled/untooled contrast, and no ranking among the three can be recovered from it.</p>
+
+<figure>
+<p class="ftitle">Mean score by task category and condition</p>
+<p class="fsub">Primary specification. Darker is better; each cell is a mean over n tasks on the 0–3 scale.</p>
+<svg viewBox="0 0 700 468" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <text x="330" y="16" text-anchor="middle" font-size="10" fill="#6b6b6b">smarts.bio</text>
+  <text x="422" y="16" text-anchor="middle" font-size="10" fill="#6b6b6b">Biomni</text>
+  <text x="514" y="16" text-anchor="middle" font-size="10" fill="#6b6b6b">Galaxy</text>
+  <text x="606" y="16" text-anchor="middle" font-size="10" fill="#6b6b6b">No tools</text>
+
+  <g font-size="11">
+  <!-- row 1 lookup -->
+  <text x="258" y="42" text-anchor="end" fill="#111">Database lookups</text><text x="282" y="42" text-anchor="end" fill="#6b6b6b" font-size="9">n=8</text>
+  <rect x="288" y="26" width="84" height="22" rx="3" fill="#184f95"/><text x="330" y="41" text-anchor="middle" fill="#fff">2.62</text>
+  <rect x="380" y="26" width="84" height="22" rx="3" fill="#0d366b"/><text x="422" y="41" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="472" y="26" width="84" height="22" rx="3" fill="#6da7ec"/><text x="514" y="41" text-anchor="middle" fill="#111">1.50</text>
+  <rect x="564" y="26" width="84" height="22" rx="3" fill="#256abf"/><text x="606" y="41" text-anchor="middle" fill="#fff">2.25</text>
+  <!-- row 2 sequence -->
+  <text x="258" y="72" text-anchor="end" fill="#111">Sequence analysis</text><text x="282" y="72" text-anchor="end" fill="#6b6b6b" font-size="9">n=6</text>
+  <rect x="288" y="56" width="84" height="22" rx="3" fill="#184f95"/><text x="330" y="71" text-anchor="middle" fill="#fff">2.67</text>
+  <rect x="380" y="56" width="84" height="22" rx="3" fill="#256abf"/><text x="422" y="71" text-anchor="middle" fill="#fff">2.33</text>
+  <rect x="472" y="56" width="84" height="22" rx="3" fill="#3987e5"/><text x="514" y="71" text-anchor="middle" fill="#fff">2.00</text>
+  <rect x="564" y="56" width="84" height="22" rx="3" fill="#cde2fb"/><text x="606" y="71" text-anchor="middle" fill="#111">0.17</text>
+  <!-- row 3 blast -->
+  <text x="258" y="102" text-anchor="end" fill="#111">Sequence search (BLAST)</text><text x="282" y="102" text-anchor="end" fill="#6b6b6b" font-size="9">n=2</text>
+  <rect x="288" y="86" width="84" height="22" rx="3" fill="#0d366b"/><text x="330" y="101" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="380" y="86" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="422" y="101" text-anchor="middle" fill="#111">1.00</text>
+  <rect x="472" y="86" width="84" height="22" rx="3" fill="#6da7ec"/><text x="514" y="101" text-anchor="middle" fill="#111">1.50</text>
+  <rect x="564" y="86" width="84" height="22" rx="3" fill="#cde2fb"/><text x="606" y="101" text-anchor="middle" fill="#111">0.50</text>
+  <!-- row 4 ngs -->
+  <text x="258" y="132" text-anchor="end" fill="#111">NGS pipelines</text><text x="282" y="132" text-anchor="end" fill="#6b6b6b" font-size="9">n=6</text>
+  <rect x="288" y="116" width="84" height="22" rx="3" fill="#184f95"/><text x="330" y="131" text-anchor="middle" fill="#fff">2.83</text>
+  <rect x="380" y="116" width="84" height="22" rx="3" fill="#256abf"/><text x="422" y="131" text-anchor="middle" fill="#fff">2.33</text>
+  <rect x="472" y="116" width="84" height="22" rx="3" fill="#0d366b"/><text x="514" y="131" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="564" y="116" width="84" height="22" rx="3" fill="#cde2fb"/><text x="606" y="131" text-anchor="middle" fill="#111">0.00</text>
+  <!-- row 5 expression -->
+  <text x="258" y="162" text-anchor="end" fill="#111">Expression analysis</text><text x="282" y="162" text-anchor="end" fill="#6b6b6b" font-size="9">n=3</text>
+  <rect x="288" y="146" width="84" height="22" rx="3" fill="#0d366b"/><text x="330" y="161" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="380" y="146" width="84" height="22" rx="3" fill="#0d366b"/><text x="422" y="161" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="472" y="146" width="84" height="22" rx="3" fill="#256abf"/><text x="514" y="161" text-anchor="middle" fill="#fff">2.33</text>
+  <rect x="564" y="146" width="84" height="22" rx="3" fill="#cde2fb"/><text x="606" y="161" text-anchor="middle" fill="#111">0.33</text>
+  <!-- row 6 variant -->
+  <text x="258" y="192" text-anchor="end" fill="#111">Variant interpretation</text><text x="282" y="192" text-anchor="end" fill="#6b6b6b" font-size="9">n=2</text>
+  <rect x="288" y="176" width="84" height="22" rx="3" fill="#0d366b"/><text x="330" y="191" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="380" y="176" width="84" height="22" rx="3" fill="#0d366b"/><text x="422" y="191" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="472" y="176" width="84" height="22" rx="3" fill="#6da7ec"/><text x="514" y="191" text-anchor="middle" fill="#111">1.50</text>
+  <rect x="564" y="176" width="84" height="22" rx="3" fill="#3987e5"/><text x="606" y="191" text-anchor="middle" fill="#fff">2.00</text>
+  <!-- row 7 structure -->
+  <text x="258" y="222" text-anchor="end" fill="#111">Structure &amp; annotation</text><text x="282" y="222" text-anchor="end" fill="#6b6b6b" font-size="9">n=4</text>
+  <rect x="288" y="206" width="84" height="22" rx="3" fill="#0d366b"/><text x="330" y="221" text-anchor="middle" fill="#fff" font-weight="700">3.00</text>
+  <rect x="380" y="206" width="84" height="22" rx="3" fill="#256abf"/><text x="422" y="221" text-anchor="middle" fill="#fff">2.25</text>
+  <rect x="472" y="206" width="84" height="22" rx="3" fill="#184f95"/><text x="514" y="221" text-anchor="middle" fill="#fff">2.75</text>
+  <rect x="564" y="206" width="84" height="22" rx="3" fill="#cde2fb"/><text x="606" y="221" text-anchor="middle" fill="#111">0.50</text>
+  <!-- row 8 design -->
+  <text x="258" y="252" text-anchor="end" fill="#111">Protein design</text><text x="282" y="252" text-anchor="end" fill="#6b6b6b" font-size="9">n=6</text>
+  <rect x="288" y="236" width="84" height="22" rx="3" fill="#256abf"/><text x="330" y="251" text-anchor="middle" fill="#fff" font-weight="700">2.50</text>
+  <rect x="380" y="236" width="84" height="22" rx="3" fill="#6da7ec"/><text x="422" y="251" text-anchor="middle" fill="#111">1.83</text>
+  <rect x="472" y="236" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="514" y="251" text-anchor="middle" fill="#111">1.33</text>
+  <rect x="564" y="236" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="606" y="251" text-anchor="middle" fill="#111">1.17</text>
+  <!-- row 9 molecule -->
+  <text x="258" y="282" text-anchor="end" fill="#111">Small molecules</text><text x="282" y="282" text-anchor="end" fill="#6b6b6b" font-size="9">n=3</text>
+  <rect x="288" y="266" width="84" height="22" rx="3" fill="#256abf"/><text x="330" y="281" text-anchor="middle" fill="#fff">2.33</text>
+  <rect x="380" y="266" width="84" height="22" rx="3" fill="#184f95"/><text x="422" y="281" text-anchor="middle" fill="#fff" font-weight="700">2.67</text>
+  <rect x="472" y="266" width="84" height="22" rx="3" fill="#184f95"/><text x="514" y="281" text-anchor="middle" fill="#fff" font-weight="700">2.67</text>
+  <rect x="564" y="266" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="606" y="281" text-anchor="middle" fill="#111">1.00</text>
+  <!-- row 10 literature -->
+  <text x="258" y="312" text-anchor="end" fill="#111">Literature &amp; evidence</text><text x="282" y="312" text-anchor="end" fill="#6b6b6b" font-size="9">n=2</text>
+  <rect x="288" y="296" width="84" height="22" rx="3" fill="#256abf"/><text x="330" y="311" text-anchor="middle" fill="#fff" font-weight="700">2.50</text>
+  <rect x="380" y="296" width="84" height="22" rx="3" fill="#3987e5"/><text x="422" y="311" text-anchor="middle" fill="#fff">2.00</text>
+  <rect x="472" y="296" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="514" y="311" text-anchor="middle" fill="#111">1.00</text>
+  <rect x="564" y="296" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="606" y="311" text-anchor="middle" fill="#111">1.00</text>
+  <!-- row 11 everyday -->
+  <text x="258" y="342" text-anchor="end" fill="#111">Everyday multi-step</text><text x="282" y="342" text-anchor="end" fill="#6b6b6b" font-size="9">n=4</text>
+  <rect x="288" y="326" width="84" height="22" rx="3" fill="#256abf"/><text x="330" y="341" text-anchor="middle" fill="#fff" font-weight="700">2.50</text>
+  <rect x="380" y="326" width="84" height="22" rx="3" fill="#9ec5f4"/><text x="422" y="341" text-anchor="middle" fill="#111">1.25</text>
+  <rect x="472" y="326" width="84" height="22" rx="3" fill="#3987e5"/><text x="514" y="341" text-anchor="middle" fill="#fff">2.00</text>
+  <rect x="564" y="326" width="84" height="22" rx="3" fill="#6da7ec"/><text x="606" y="341" text-anchor="middle" fill="#111">1.75</text>
+  </g>
+
+  <text x="288" y="380" font-size="9.5" fill="#6b6b6b">Score scale</text>
+  <rect x="288" y="388" width="51" height="13" fill="#cde2fb"/>
+  <rect x="339" y="388" width="51" height="13" fill="#9ec5f4"/>
+  <rect x="390" y="388" width="51" height="13" fill="#6da7ec"/>
+  <rect x="441" y="388" width="51" height="13" fill="#3987e5"/>
+  <rect x="492" y="388" width="51" height="13" fill="#256abf"/>
+  <rect x="543" y="388" width="51" height="13" fill="#184f95"/>
+  <rect x="594" y="388" width="54" height="13" fill="#0d366b"/>
+  <text x="288" y="414" font-size="9" fill="#6b6b6b">0.0</text>
+  <text x="468" y="414" text-anchor="middle" font-size="9" fill="#6b6b6b">1.5</text>
+  <text x="648" y="414" text-anchor="end" font-size="9" fill="#6b6b6b">3.0</text>
+</svg>
+<figcaption><span class="fnum">Figure 5 |</span> The control condition is competent only where the answer is a well-characterised fact it has memorised (database lookups 2.25, variant interpretation 2.00) and collapses on NGS pipelines (0.00) and expression analysis (0.33), the categories whose answers depend on the user's own data. Recall is not computation. The same pattern also bounds the platforms' advantage: on roughly half the categories a well-prompted model with no infrastructure is a reasonable substitute. Cell values should not be read to two-decimal precision; see the text on category sizes.</figcaption>
+</figure>
+
+<h3>3.4 Computational protein design</h3>
+<p>Protein design and structure prediction was the hardest category for every condition: no condition averaged above 2.50, against 3.00 ceilings elsewhere (Figure 6). Tasks separable by database lookup (ligand binding affinity, two-chain complex prediction) were answered well by several conditions; tasks requiring a generative model to be run (de novo binder design, enzyme thermostabilisation, mutation stability ranking) separated them.</p>
+
+<figure>
+<p class="ftitle">Protein design and structure prediction, by task</p>
+<p class="fsub">Primary specification. Six tasks requiring GPU-class models (co-folding, de novo design, stability prediction).</p>
+<p class="legend">
+  <span><i class="sw" style="background:#2a78d6"></i>smarts.bio</span>
+  <span><i class="sw" style="background:#eb6834"></i>Biomni</span>
+  <span><i class="sw" style="background:#1baf7a"></i>Galaxy</span>
+  <span><i class="sw" style="background:#eda100"></i>No tools</span>
+</p>
+<svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <line x1="245" y1="18" x2="245" y2="358" stroke="#b0b0ac"/>
+  <line x1="390" y1="18" x2="390" y2="358" stroke="#e3e3e0"/>
+  <line x1="535" y1="18" x2="535" y2="358" stroke="#e3e3e0"/>
+  <line x1="680" y1="18" x2="680" y2="358" stroke="#e3e3e0"/>
+  <text x="245" y="374" text-anchor="middle" font-size="10" fill="#6b6b6b">0</text>
+  <text x="390" y="374" text-anchor="middle" font-size="10" fill="#6b6b6b">1</text>
+  <text x="535" y="374" text-anchor="middle" font-size="10" fill="#6b6b6b">2</text>
+  <text x="680" y="374" text-anchor="middle" font-size="10" fill="#6b6b6b">3</text>
+  <text x="462" y="392" text-anchor="middle" font-size="10" fill="#3a3a3a">rubric score (0–3)</text>
+
+  <g font-size="11">
+  <text x="237" y="42" text-anchor="end" fill="#111">Ligand binding affinity</text>
+  <rect x="245" y="22" width="435" height="11" rx="2" fill="#2a78d6"/>
+  <rect x="245" y="35" width="435" height="11" rx="2" fill="#eb6834"/>
+  <rect x="245" y="48" width="435" height="11" rx="2" fill="#1baf7a"/>
+  <rect x="245" y="61" width="145" height="11" rx="2" fill="#eda100"/>
+
+  <text x="237" y="100" text-anchor="end" fill="#111">De novo binder design</text>
+  <rect x="245" y="80" width="290" height="11" rx="2" fill="#2a78d6"/>
+  <rect x="245" y="93" width="145" height="11" rx="2" fill="#eb6834"/>
+  <rect x="245" y="106" width="145" height="11" rx="2" fill="#1baf7a"/>
+  <rect x="245" y="119" width="145" height="11" rx="2" fill="#eda100"/>
+
+  <text x="237" y="158" text-anchor="end" fill="#111">Nanobody design</text>
+  <rect x="245" y="138" width="435" height="11" rx="2" fill="#2a78d6"/>
+  <rect x="245" y="151" width="290" height="11" rx="2" fill="#eb6834"/>
+  <rect x="245" y="164" width="290" height="11" rx="2" fill="#1baf7a"/>
+  <rect x="245" y="177" width="145" height="11" rx="2" fill="#eda100"/>
+
+  <text x="237" y="216" text-anchor="end" fill="#111">Enzyme thermostabilisation</text>
+  <rect x="245" y="196" width="290" height="11" rx="2" fill="#2a78d6"/>
+  <rect x="245" y="209" width="145" height="11" rx="2" fill="#eb6834"/>
+  <rect x="245" y="222" width="145" height="11" rx="2" fill="#1baf7a"/>
+  <rect x="245" y="235" width="145" height="11" rx="2" fill="#eda100"/>
+
+  <text x="237" y="274" text-anchor="end" fill="#111">Mutation stability ranking</text>
+  <rect x="245" y="254" width="290" height="11" rx="2" fill="#2a78d6"/>
+  <rect x="245" y="267" width="145" height="11" rx="2" fill="#eb6834"/>
+  <rect x="245" y="280" width="145" height="11" rx="2" fill="#1baf7a"/>
+  <rect x="245" y="293" width="145" height="11" rx="2" fill="#eda100"/>
+
+  <text x="237" y="332" text-anchor="end" fill="#111">Two-chain complex prediction</text>
+  <rect x="245" y="312" width="435" height="11" rx="2" fill="#2a78d6"/>
+  <rect x="245" y="325" width="435" height="11" rx="2" fill="#eb6834"/>
+  <rect x="245" y="338" width="2.5" height="11" rx="1" fill="#1baf7a"/>
+  <rect x="245" y="351" width="290" height="11" rx="2" fill="#eda100"/>
+  </g>
+</svg>
+<figcaption><span class="fnum">Figure 6 |</span> Category means: smarts.bio 2.50, Biomni 1.83, Galaxy 1.33, no tools 1.17. The untooled condition scored 1 on five of six tasks by reasoning from chemistry without computing anything, a pattern that produces superficially reasonable prose and no usable design. Galaxy's zero on two-chain complex prediction was a timeout, not a refusal.</figcaption>
+</figure>
+
+<p>One result contradicted our stated expectation. We had predicted that managed GPU compute would be the clearest point of platform differentiation, on the assumption that a general workflow platform would not offer it. Galaxy scored 3 on ligand binding affinity, matching the best condition: Galaxy provides docking, and its 2024 platform update explicitly describes integrating general-purpose GPU access [5]. The differentiation we expected holds for generative design but not for established ligand docking, and the prior was too strong.</p>
+
+<h3>3.5 Completion and reliability</h3>
+<p>Completion is a distinct dimension from answer quality, and the two do not move together. Fifteen runs across the tool-enabled conditions produced no answer at all within their fixed budget: one for smarts.bio, six for Biomni and eight for Galaxy (Figure 7). The control condition never timed out, because it never waits on external execution, an absence of timeouts that is not comparable to the reliability of a condition that does.</p>
+
+<figure>
+<p class="ftitle">Runs that produced no answer within the pre-specified budget</p>
+<p class="fsub">Each such run scores 0 under the intention-to-complete principle.</p>
+<svg viewBox="0 0 700 170" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+  <text x="142" y="30" text-anchor="end" font-size="12" fill="#111">smarts.bio</text>
+  <rect x="150" y="18" width="66" height="18" rx="3" fill="#2a78d6"/>
+  <text x="224" y="32" font-size="11" fill="#111">1 of 46</text>
+  <text x="142" y="70" text-anchor="end" font-size="12" fill="#111">Biomni</text>
+  <rect x="150" y="58" width="396" height="18" rx="3" fill="#eb6834"/>
+  <text x="554" y="72" font-size="11" fill="#111">6 of 46</text>
+  <text x="142" y="110" text-anchor="end" font-size="12" fill="#111">Galaxy</text>
+  <rect x="150" y="98" width="528" height="18" rx="3" fill="#1baf7a"/>
+  <text x="686" y="112" font-size="11" fill="#111" text-anchor="end">8 of 46</text>
+  <text x="142" y="150" text-anchor="end" font-size="12" fill="#111">No tools</text>
+  <rect x="150" y="138" width="2.5" height="18" rx="1" fill="#eda100"/>
+  <text x="160" y="152" font-size="11" fill="#111">0 of 46</text>
+</svg>
+<figcaption><span class="fnum">Figure 7 |</span> A median wall time is a misleading reliability statistic in the presence of these runs: a condition that gives up contributes no time to the median while costing the user the whole task. Among <i>completed</i> runs only, median times were 163 s, 144 s, 197 s and 25 s and ninetieth percentiles 1168 s, 959 s, 751 s and 73 s. That basis systematically flatters the conditions with more timeouts, since their slowest runs are the ones excluded. On it, smarts.bio has the worst ninetieth-percentile latency in the comparison, by a wide margin. §5.6 describes a host-contention problem that may account for some of the non-completions.</figcaption>
+</figure>
+
+<h3>3.6 Driver cost</h3>
+<p>Recorded model-driver cost, meaning the model tokens consumed to operate a condition across the whole suite, was $175.65 (smarts.bio), $52.61 (Biomni), $124.61 (Galaxy) and $12.76 (control). Much of the spread arises from the polling loop, in which every session resume is a fresh model turn carrying the accumulated conversation, so a condition that runs long jobs pays repeatedly to wait for them.</p>
+<p>Per acceptable answer the same totals give $4.08, $1.46, $4.02 and $0.98 in that order, on which smarts.bio is the most expensive of the four conditions and Biomni by a wide margin the cheapest of the three tool-enabled ones. These are driver costs only, and they are not a cost-efficiency ranking. Each platform's own CPU and GPU time is not comparably observable across vendors and is excluded entirely. Driver cost also went unrecorded for fourteen of the fifteen timed-out runs, undercounting smarts.bio by one run, Biomni by six and Galaxy by seven of its eight. The one exception, a Galaxy run resumed twenty times before it timed out, recorded $7.10 and is included in the total above. These figures therefore measure what it cost to operate each condition through this harness, not what the underlying work costs. The control's $0.98 illustrates the distinction, since it buys an acceptable answer barely a quarter of the time. §5.7 takes up the consequences.</p>
+
+<h3>3.7 Paired comparisons</h3>
+<p>Because every condition saw the same task identifiers, paired comparison is possible (Table 2). The tool-enabled conditions agree with one another far more often than they differ: smarts.bio and Biomni produced identical scores on 29 of 46 shared tasks. On the tasks where they differ smarts.bio scores higher 14 times against 3 (exact sign test, p = 0.013), and against Galaxy 21 times against 4 (p = 0.0009). With one run per cell these tests establish that the conditions differed on these particular tasks, not that one platform is reliably better than another; they are reported because the counts in Table 2 invite the calculation.</p>
+
+<table>
+<caption><b>Table 2 |</b> Paired task-level outcomes, primary specification, over all 46 tasks in both conditions, with non-completions scored 0 rather than dropped.</caption>
+<thead><tr><th>Comparison</th><th>First higher</th><th>Tied</th><th>Second higher</th><th>Mean difference</th></tr></thead>
+<tbody>
+<tr><td>smarts.bio vs Biomni</td><td>14</td><td>29</td><td>3</td><td>+0.39</td></tr>
+<tr><td>smarts.bio vs Galaxy</td><td>21</td><td>21</td><td>4</td><td>+0.70</td></tr>
+<tr><td>smarts.bio vs no tools</td><td>39</td><td>5</td><td>2</td><td>+1.70</td></tr>
+<tr><td>Biomni vs Galaxy</td><td>15</td><td>24</td><td>7</td><td>+0.30</td></tr>
+<tr><td>Biomni vs no tools</td><td>30</td><td>14</td><td>2</td><td>+1.30</td></tr>
+<tr><td>Galaxy vs no tools</td><td>26</td><td>13</td><td>7</td><td>+1.00</td></tr>
+</tbody>
+</table>
+
+<h3>3.8 Provenance and identifier fabrication</h3>
+<p>Every PubMed identifier, DOI, UniProt, PDB, ChEMBL and PubChem accession emitted by any condition was resolved against its issuing registry: 126 identifiers, 124 registered, 2 absent (Table 3). Both absent identifiers were DOIs sharing a single non-existent stem, appearing independently in the control condition and in one tool-enabled condition. That an identical fabricated stem recurs across unrelated conditions implicates the shared base model's priors rather than any platform, a finding in its own right: <i>tool access does not eliminate fabrication, it displaces it.</i> Where an answer was assembled from retrieved records the identifiers resolved; where the model filled a gap from memory, they did not.</p>
+
+<table>
+<caption><b>Table 3 |</b> Provenance and registry resolution, primary specification.</caption>
+<thead><tr><th>Condition</th><th>Answers citing a source</th><th>Identifiers emitted</th><th>Registered</th><th>Absent</th></tr></thead>
+<tbody>
+<tr><td>smarts.bio</td><td>44 / 46</td><td>57</td><td>57</td><td class="bst">0</td></tr>
+<tr><td>Biomni</td><td>36 / 46</td><td>50</td><td>50</td><td class="bst">0</td></tr>
+<tr><td>Galaxy</td><td>35 / 46</td><td>8</td><td>7</td><td>1</td></tr>
+<tr><td>No tools</td><td>18 / 46</td><td>11</td><td>10</td><td>1</td></tr>
+</tbody>
+</table>
+
+<p>The control condition cites a source in 18 of 46 answers. Its low absolute count of fabricated identifiers reflects how rarely it attempts a sourced claim, not unusual care.</p>
+<p>One asymmetry in Table 3 requires explanation. Galaxy cites a source in 35 of 46 answers but emits only eight registry identifiers, against 57 and 50 for the other tool-enabled conditions. This is a difference in the <i>kind</i> of provenance offered rather than its quantity: of those 35 answers, 18 cite Galaxy-internal object identifiers and 10 reference history items or dataset numbers, all of which are checkable by the user who ran the job but resolve against no public registry. The registry audit can therefore say nothing about the correctness of Galaxy's provenance, and its single absent DOI should not be read against a denominator of eight as though that were comparable to 57.</p>
+
+<h2>4. Discussion</h2>
+
+<p><b>The tooled–untooled contrast is the robust result of this study.</b> What makes it interpretable rather than merely large is that the control fails precisely where an answer cannot be recalled, because it depends on data the model has never seen. Prompting alone is unlikely to close that gap, since the missing ingredient is execution rather than reasoning; we varied only tool access and never the prompt, so that reading is an interpretation of the mechanism rather than something this design measured.</p>
+<p>The same effect has been measured independently by a party with no stake in our result. Biomni's own evaluation reports an average relative gain of 402.3% over an untooled base language model across eight realistic biomedical benchmarks [3,4], using a different base model, different tasks and a different scoring protocol. That two unrelated designs recover an effect of this magnitude in the same direction is stronger evidence for the tooled–untooled contrast than either study alone. It is also consistent with the gap BixBench reports between knowledge recall and open-answer analytical performance [2], and with BiomniBench's observation that the agent harness shifts scores by more than the difference between successive model generations [7].</p>
+
+<p><b>The between-condition contrast is weaker than it looks.</b> The three tool-enabled conditions span 0.70 points on a single run per cell with no error bars, and smarts.bio ties with Biomni on 29 of 46 paired tasks. The two sign tests of §3.7 reach conventional significance but establish only that the conditions differed on these tasks; the ordering does not establish a ranking of platform capability.</p>
+
+<p><b>Reliability behaves differently from accuracy and may matter more in practice.</b> Fifteen runs produced nothing. For a working scientist, a condition that is marginally less accurate but finishes may be preferable to one that is slightly better when it works and silently fails up to one task in six. We recommend that future comparisons report quality conditional on completion alongside an intention-to-complete score, as done here, since the two can order conditions differently.</p>
+
+<p><b>An automated judge needs an independent auditor.</b> Seven of ten hallucination flags were false positives. One propagated into our own draft analysis before being caught: the judge declared PMID 9631087 a fabricated citation for PDB entry 1GFL and offered PMID 8848045 as the correct one. The first is the structure's own primary citation; the second is an unrelated vision-science paper. The substitution survived in an internal analysis document until the registry audit reached it. The LLM-as-judge literature reports high aggregate agreement with human preference [9] but also systematic position and verbosity biases. Aggregate agreement can evidently coexist with a specific sub-judgement, here fabrication detection, that is unreliable enough to be unusable. Benchmarks relying on an automated judge without a verification layer should be assumed to carry errors of comparable magnitude, and the direction of those errors need not be symmetric across conditions.</p>
+
+<p><b>What this design cannot distinguish.</b> The benchmark cannot separate a platform that lacks a capability from one that possesses it but failed to surface it to the model. Several low scores trace to the model never discovering a tool that existed, which is a property of the tool-description interface rather than of the underlying compute. An unreachable capability is no capability to a user, but to a developer the distinction separates building something from documenting it. Nor does this design measure workflow reproducibility, provenance completeness, governance, multi-user operation, or usability for humans rather than agents. These are central to a platform like Galaxy [5], and none is captured by a task-outcome score. Process-level frameworks [7,8] and structured-output comparison [6] address exactly these dimensions and are complementary to, not competitors of, the present measurement.</p>
+
+<h2>5. Limitations</h2>
+
+<div class="note">We regard the tooled-versus-untooled contrast as sound and the between-condition ordering as provisional. The reasons follow, in descending order of how much they threaten the latter.</div>
+
+<h3>5.1 Benchmark authorship</h3>
+<p>This benchmark was designed, run, graded and audited by a party to the comparison. That is a structural conflict, and no internal procedure removes it; the safeguards adopted here should be read as constraints upon it rather than as a remedy for it. Five safeguards were adopted. The task set, rubrics and ground truth were frozen before the first run (§2.2). Every condition received the identical model, system prompt and task text, and differed only in tool access (§2.1). The rubric judge was blinded to condition (§2.4). Judge scores are preserved unedited, with audit corrections held in a separate layer so that both readings remain inspectable (§2.5, §7). Both the audit-corrected and the raw-score specifications are reported in full rather than reconciled after the fact, and every figure in §3 can be recomputed from the released files. What none of that addresses is that the task set is self-authored, and that the distribution of categories across it is itself a choice which may favour the authoring platform. On the category where that objection is sharpest, the six GPU protein-design tasks that most favour a managed GPU catalogue, it can be tested directly: removing them leaves the ordering intact and raises the smarts.bio mean by 0.03 (§3.1). That addresses one category out of eleven, and not the more general point that the weighting of the whole set was chosen by an interested party.</p>
+<p>Audit attention was also asymmetric: 57 of 126 identifier checks and twelve of the primary-source audits concern our own condition, against two to seven for each other condition. Examining our own answers more closely than anyone else's is methodologically wrong irrespective of what it finds. Its measured effect ran against the authoring condition. Audit corrections moved that condition's scores down by a net six points, across four downgrades and two upgrades, while moving Biomni up by five and Galaxy up by three: closer scrutiny of our own work surfaced more of our own errors. A differently distributed audit might have found more in the comparators, so the asymmetry remains a defect of the design rather than a neutral feature of it. Independent task design and blinded replication remain necessary before the ordering can be considered established.</p>
+<p>The shared system prompt deserves specific mention, because §2.1 presents it as a fairness guarantee and it is also a confound. We wrote that prompt, and we wrote the tool descriptions for one of the four conditions. Since tool <i>discovery</i> is explicitly part of what the study measures (§2.2), a prompt whose conventions match our own tool descriptions advantages our condition by construction, and we have no measurement of how large that advantage is. Giving each platform a prompt tuned to its own conventions would introduce a different bias. Neither choice is neutral, and the magnitude of the one made here is unmeasured.</p>
+
+<h3>5.2 The comparator conditions may not represent the comparator systems</h3>
+<p>A platform reached through a tool-server protocol exposes its tool inventory, not necessarily the agent architecture its designers built around those tools. This is a first-order concern for Biomni, whose published system executes code as its action interface and reports a 20.4% advantage over an ablated variant using conventional function-calling [3,4]. We could not verify from outside which of these our access path engaged. If it engaged the latter, this study compared our full platform against a competitor's tools minus its planner, and any reader who took the conditions in §3 for the platforms themselves would be badly misled.</p>
+<p>The concern extends, less quantifiably, to Galaxy: a workflow system whose stated value lies in reproducible, provenance-tracked, shareable analyses [5] is poorly represented by single-shot tool invocation. Both effects run against the comparators and in our favour, and neither is bounded by anything in our data. This is why §2.1 scopes each condition as a tool-server endpoint rather than as a platform, and why the Results speak of conditions throughout. A comparison of the platforms themselves would require exercising each through the interface its designers intend; this study does not do that, and its numbers should not be read as though it had.</p>
+
+<h3>5.3 Unequal measurement across the study period</h3>
+<p>Runs span 2–12 November 2026. The comparator platforms are third-party hosted services, measured as encountered, once. The authoring platform was under active development during the window and was measured on more than one occasion. The margin between the authoring condition and the others should therefore be read as an upper bound rather than a point estimate. We state this explicitly because per-run timestamps are included in the released data, from which it is in any case recoverable.</p>
+
+<h3>5.4 Single run per cell</h3>
+<p>The pre-specified design called for three repetitions; one was run. Agentic systems are stochastic, and a single observation cannot estimate repeatability. The three available repetition-2 records cover only three control-condition tasks and do not remedy this. This is the single largest obstacle to treating any between-condition difference as established.</p>
+
+<h3>5.5 Task-material defects and inconsistent exclusion standards</h3>
+<p>Two tasks were excluded post hoc for defects in their own material (§2.2), and the identities of both are released with the data. A third task, germline variant calling, carries a known ground-truth defect: its reference answer names variants absent from the supplied alignment, having been frozen against the wrong fixture. It was corrected within the audit layer rather than voided, which is an inconsistent application of the standard applied to the other two. It is also not a neutral case: on that task smarts.bio scores 2 and Galaxy scores 3, so the choice to repair rather than void preserves a comparator's win and our loss, but it was still made ad hoc. A single rule applied to all three defective tasks would be preferable, and we report what it would cost: voiding the germline-calling task as well gives means of 2.71, 2.36, 1.98 and 1.02 over 45 tasks, a shift of at most 0.06 in any condition, with the ordering unchanged. The primary analysis is reported alongside the raw specification for the same reason: the two specifications differ by at most 0.15 in any condition and reorder nothing, so none of this handling carries the result.</p>
+
+<h3>5.6 Execution environment and timeout attribution</h3>
+<p>A comparator's tool container was inadvertently left running at full utilisation of one CPU core on the benchmark host for three days under binary translation. Runs executing alongside it have inflated wall times, and we cannot exclude that it contributed to that condition's timeouts. Because timeouts score 0, this is a potential source of error <i>in the authoring platform's favour</i> affecting up to six of the fifteen non-completions in Figure 7. Host telemetry sufficient to quantify it was not retained.</p>
+
+<h3>5.7 Tier asymmetry and incomplete cost accounting</h3>
+<p>Comparator conditions ran on free tiers; the authoring condition ran on its own paid infrastructure. Rate limits and queue priority were not controlled, so some portion of the reliability difference may reflect tier rather than platform. Separately, platform compute cost is absent and model cost is missing for timed-out runs (§3.6), so the figures cannot support a total-cost-of-ownership comparison.</p>
+
+<h3>5.8 Absence of an external calibration anchor or human baseline</h3>
+<p>All 48 tasks are our own. The pre-specified design called for several items drawn from published benchmarks such as LAB-Bench [1] or BixBench [2] as a difficulty anchor; none were included. A reader consequently has no model-independent measure of how hard these tasks are, and cannot position our scores against published results.</p>
+<p>There is no human baseline either. Related work routinely supplies one: Biomni reports 74.4% against an expert 74.7% on database question answering and 81.9% against 78.8% on sequence questions, and benchmarks its cloning protocols against both a trainee and a senior expert [3,4]. We cannot say whether a mean of 2.70 is close to what a competent bioinformatician would score on these 46 tasks, or far below it. Without that anchor, every score reported here is meaningful only relative to the other conditions in this study, and carries no absolute interpretation.</p>
+
+<h3>5.9 Scope</h3>
+<p>One model, one task set, one measurement window. The study does not establish whether the pattern holds for other models, other scientific domains, other data types or other platform configurations, nor does it evaluate security, governance or behaviour at production scale.</p>
+
+<h2>6. Conclusion</h2>
+<p>Holding the language model fixed and varying only tool access, whether an analysis can be executed is the first-order determinant of performance on realistic bioinformatics tasks. An untooled frontier model failed roughly three quarters of these tasks and failed almost completely on those requiring computation over user-supplied data, while every tool-enabled condition at least doubled its acceptable-task rate. This contrast held under both analysis specifications and does not depend on any comparison between the platforms.</p>
+<p>The relative ordering of the three tool-enabled conditions is the same under both analysis specifications, but it is provisional in strength. Seven factors bear on it: single-run measurement, self-authored tasks and prompts, asymmetric audit attention, unequal measurement across the study period, tier differences, unquantified host contention, and the likelihood that the comparator conditions exercised tool inventories rather than the agent architectures built around them. The last is the most serious. Each is reported rather than resolved. A publishable comparison of platforms would require independent task authorship, repetition of every cell, symmetric audit coverage, a controlled execution environment, a human performance baseline, and access to each system through the interface its designers intend. The finding that does not depend on those requirements is narrower and more robust: within the conditions evaluated here, with the model held fixed, whether a tool layer was attached was a stronger determinant of task completion than which of the three endpoints it was.</p>
+
+<h2>7. Data availability</h2>
+<p>The frozen task set with rubrics and ground truth, the run-level record for every run, both audit layers, and the complete raw transcript of every run including those that failed are released at <a href="https://github.com/smartsbio/bio-agent-platform-benchmark">github.com/smartsbio/bio-agent-platform-benchmark</a>, under the MIT licence for code and CC BY 4.0 for the task set, the run record and the transcripts. Judge scores are preserved unedited; audit corrections reside in a separate layer so that the original and corrected readings are both inspectable. The task set is released as it was run. A second file carries the same set with the two defective tasks of §2.2 repaired, together with a changelog recording each repair; it was prepared after the run and never executed, so no figure reported here derives from it, and it is published for the use of anyone repeating the study. Both analysis specifications of §2.5 are implemented in a single released script, <code>analyze.py</code>, which takes no arguments and requires nothing beyond a standard Python 3 installation; running it reproduces every condition-level and category-level figure reported in §3 from the three primary files. The repository is the citable record of this study. Its first public commit identifies the released artefacts exactly, and should be cited alongside this report; it does not, as §2.2 states, evidence the date on which the task set was frozen, because the set was not under version control at that time. A versioned archive with a persistent identifier is being deposited at Zenodo from a tagged release of the repository; until that identifier is issued, the commit hash is what should be cited.</p>
+
+<h2>8. Declarations</h2>
+<div class="decl">
+<p><b>Competing interests.</b> This benchmark was designed, executed, graded and audited by smarts.bio, which is one of the platforms under comparison and which funded the work. The author is the founder, chief executive and a shareholder of smarts.bio, and therefore has a direct financial interest in one of the four conditions evaluated here. No comparator platform was consulted during the design, execution or analysis of the study, and none was contacted before this preprint was posted. Comment is welcome from any third party, whether a platform under test, one of its users, or a reader with no stake in any of them, and will be addressed to the best of the author's ability in a revised version of this preprint. Objections are best directed at a named task and arm, since the transcript of every run is released and a disagreement can therefore be argued over the record rather than over the summary. Corrections will be reported rather than quietly applied, including where they move a result against smarts.bio, and published scores will not be rewritten in place: a corrected reading is added alongside the frozen one, as the audit layer of §2.5 already does.</p>
+<p><b>Use of AI tools.</b> <code>claude-opus-5</code> was used under the author's direction in four distinct roles: it generated every answer under evaluation (§2.1); it served as the blinded rubric judge (§2.4); it assisted in writing the measurement harness and the analysis code; and it assisted in drafting this manuscript. The first two roles are part of the object of study and are reported as method. The second two are authoring assistance. Because one model family occupies all four, the resulting bias cannot be bounded by reasoning about any one of them in isolation, and it is the overlap rather than any single role that requires weighing. The mitigations are partial and are those described in §2.4 and §7: the judge was blinded to condition, its verdicts were re-checked against primary sources, every number can be recomputed from the released data and code, and every reference in §9 resolves against a primary registry. An independent judge family and an independent reimplementation of the analysis remain necessary and have not been carried out. The author takes responsibility for the study design, the interpretation and the final manuscript.</p>
+<p><b>Funding.</b> Internally funded by smarts.bio. Platform compute for the authoring condition was provided by the author; comparator conditions used publicly available free tiers.</p>
+<p><b>Author contributions.</b> N.O. is the sole author and is responsible for all components of the work: conceptualisation and study design; task authoring, rubrics and ground truth; implementation of the measurement harness, the blinded judge and both audit layers; execution and monitoring of all runs; primary-source and identifier-registry verification; statistical analysis; and writing of the manuscript. The role of <code>claude-opus-5</code> in that work, and the conflict it creates, is stated separately above; a language model is not an author and is not credited as one.</p>
+<p><b>Ethics approval.</b> Not applicable; no human subjects or identifiable personal data were involved. All biological data used are public reference records or synthetic fixtures generated for this study.</p>
+<p><b>Reference verification.</b> Every reference in §9 was resolved against arXiv, bioRxiv or PubMed during preparation, using the same literature tools evaluated in the benchmark, and each is cited below with the identifier under which it was confirmed. One citation circulating in an earlier draft of this manuscript as a <i>Proceedings of Machine Learning Research</i> article could be confirmed only as a preprint, and is cited as such below.</p>
+</div>
+
+<h2>9. References</h2>
+<ol class="refs">
+<li>Laurent JM, Janizek JD, Ruzo M, et al. LAB-Bench: Measuring Capabilities of Language Models for Biology Research. <i>arXiv</i>. 2024. <a href="https://arxiv.org/abs/2407.10362">arXiv:2407.10362</a>.</li>
+<li>Mitchener L, Laurent JM, Tenmann B, et al. BixBench: A Comprehensive Benchmark for LLM-based Agents in Computational Biology. <i>arXiv</i>. 2025. <a href="https://arxiv.org/abs/2503.00096">arXiv:2503.00096</a>.</li>
+<li>Huang K, Zhang S, Wang H, et al. Biomni: A General-Purpose Biomedical AI Agent. <i>bioRxiv</i>. 2025. <a href="https://doi.org/10.1101/2025.05.30.656746">doi:10.1101/2025.05.30.656746</a>. Preprint.</li>
+<li>Huang K, Zhang S, Wang H, et al. Autonomous biomedical research with an artificial intelligence agent. <i>Science</i>. 2026;393(6813):eadz4351. <a href="https://doi.org/10.1126/science.adz4351">doi:10.1126/science.adz4351</a>. <a href="https://pubmed.ncbi.nlm.nih.gov/42424436/">PMID:42424436</a>.</li>
+<li>Galaxy Community. The Galaxy platform for accessible, reproducible, and collaborative data analyses: 2024 update. <i>Nucleic Acids Res</i>. 2024;52(W1):W83–W94. <a href="https://doi.org/10.1093/nar/gkae410">doi:10.1093/nar/gkae410</a>. <a href="https://pubmed.ncbi.nlm.nih.gov/38769056/">PMID:38769056</a>.</li>
+<li>Guo W, Zhang M, Han B, et al. PromptBio-Bench: Benchmarking LLM-based Bioinformatics Agents for End-to-End Data Analysis. <i>bioRxiv</i>. 2026. <a href="https://doi.org/10.64898/2026.05.05.723092">doi:10.64898/2026.05.05.723092</a>. Preprint.</li>
+<li>Qu Y, Lu Y, Tu X, et al. BiomniBench: Process-level Evaluation of LLM Agents for Real-world Biomedical Research. <i>bioRxiv</i>. 2026. <a href="https://doi.org/10.64898/2026.05.12.724604">doi:10.64898/2026.05.12.724604</a>. Preprint.</li>
+<li>Fa D, Culjak M, Pandza B, Cupic M. BioAgent Bench: An AI Agent Evaluation Suite for Bioinformatics. <i>arXiv</i>. 2026. <a href="https://arxiv.org/abs/2601.21800">arXiv:2601.21800</a>. Preprint.</li>
+<li>Zheng L, Chiang WL, Sheng Y, et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. <i>arXiv</i>. 2023. <a href="https://arxiv.org/abs/2306.05685">arXiv:2306.05685</a>.</li>
+</ol>
+<p style="font-size:8.3pt; color:#3a3a3a; margin-top:6pt">Preprints are identified as such and should not be presented as peer-reviewed articles. References [1,2,6,7,8] are preprints at the time of writing; [4] and [5] are peer-reviewed journal articles. Bibliographic details should be re-checked against the final record of publication at submission.</p>
+
+</div>
+</body>
+</html>

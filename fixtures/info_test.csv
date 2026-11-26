@@ -1,0 +1,16 @@
+Sample,Treatment,Gene_Expression,Cell_Viability,Replicate
+S1,Control,1.2,98.5,1
+S2,Control,1.1,97.8,2
+S3,Control,1.3,98.2,3
+S4,Control,1.0,99.1,4
+S5,Control,1.2,98.0,5
+S6,Drug_A,2.5,95.2,1
+S7,Drug_A,2.8,94.8,2
+S8,Drug_A,2.6,95.5,3
+S9,Drug_A,2.7,95.0,4
+S10,Drug_A,2.4,94.5,5
+S11,Drug_B,3.2,92.1,1
+S12,Drug_B,3.5,91.8,2
+S13,Drug_B,3.1,92.5,3
+S14,Drug_B,3.4,92.0,4
+S15,Drug_B,3.3,91.5,5
