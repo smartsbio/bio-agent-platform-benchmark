@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+title: >-
+  A four-arm benchmark of agentic bioinformatics platforms:
+  smarts.bio, Biomni, Galaxy and an untooled control
+message: >-
+  If you use this benchmark, its task set or its results, please
+  cite it. Cite the commit hash or the Zenodo DOI so it is clear
+  which version you read.
+type: dataset
+authors:
+  - family-names: Orpaz
+    given-names: Nir
+    affiliation: smarts.bio
+    orcid: https://orcid.org/0009-0004-7037-040X
+repository-code: https://github.com/smartsbio/bio-agent-platform-benchmark
+abstract: >-
+  The same model answering the same prompts through one platform's
+  tool server at a time, or through none at all. Four conditions,
+  46 tasks each after audit, scored by a rubric judge blinded to
+  condition. Built by smarts.bio, which is one of the conditions
+  under comparison; the task set, the full run record and the raw
+  transcript of every run are released so the result can be checked
+  rather than taken on trust.
+keywords:
+  - bioinformatics
+  - computational biology
+  - genomics
+  - variant calling
+  - RNA-seq
+  - BLAST
+  - protein design
+  - benchmark
+  - LLM evaluation
+  - large language models
+  - LLM
+  - AI agents
+  - agentic AI
+  - Model Context Protocol
+  - MCP
+  - tool use
+  - tool calling
+  - Claude
+  - reproducibility
+  - smarts.bio
+  - Biomni
+  - Galaxy
+license: MIT
