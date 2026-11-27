@@ -252,7 +252,116 @@ def head_to_head(cells):
                 "win": win, "tie": tie, "loss": loss,
                 "sign_test_p": round(sign_test(win, win + loss), 4),
             })
+    # Holm-Bonferroni across the six pairwise tests (§2.6). All six are
+    # reported, not only those involving the authoring condition.
+    order = sorted(range(len(rows)), key=lambda i: rows[i]["sign_test_p"])
+    running = 0.0
+    for rank, i in enumerate(order):
+        adj = min(1.0, max(running, (len(rows) - rank) * rows[i]["sign_test_p"]))
+        running = adj
+        rows[i]["holm_p"] = round(adj, 4)
     return rows
+
+
+def deterministic_layer(cells, tasks, runs):
+    """How much of the primary record rests on checks vs the judge (§2.4).
+
+    These counts are published in the text, so they are computed here rather
+    than by hand; a figure in the paper that this does not reproduce is wrong.
+    """
+    keys = set(cells)
+    declaring = {t for t in {tid for tid, _ in keys}
+                 if tasks[t]["check_type"] != "llm_rubric"}
+    prim = [r for r in runs if (r["task_id"], r["arm"]) in keys and r["rep"] == "1"]
+    on_decl = [r for r in prim if r["task_id"] in declaring]
+    verdict = [r for r in on_decl if r["deterministic_pass"].strip()]
+    timeout = [r for r in on_decl if r["status"] == "timeout"]
+    unread = [r for r in on_decl
+              if not r["deterministic_pass"].strip() and r["status"] != "timeout"]
+    n_tasks = len({tid for tid, _ in keys})
+    return [
+        {"quantity": "tasks in specification", "n": n_tasks},
+        {"quantity": "  declaring a checkable type", "n": len(declaring)},
+        {"quantity": "  resting on the rubric only", "n": n_tasks - len(declaring)},
+        {"quantity": "primary runs", "n": len(prim)},
+        {"quantity": "  on declaring tasks", "n": len(on_decl)},
+        {"quantity": "    check returned a verdict", "n": len(verdict)},
+        {"quantity": "    timed out", "n": len(timeout)},
+        {"quantity": "    answer unreadable by the check", "n": len(unread)},
+        {"quantity": "  resting on the judge alone", "n": len(prim) - len(verdict)},
+    ]
+
+
+def rerun_substitution(cells, tasks):
+    """§5.9: six smarts.bio cells were run again during the study. The audit
+    layer recorded a judge score for each before that happened. Substituting
+    those earlier scores bounds how much the re-running moved the result.
+
+    The superseded runs themselves were not retained, so this is a bound
+    reconstructed from the audit layer, not a measurement of the original
+    record. Computed here rather than by hand because the paper quotes it.
+    """
+    path = ROOT / "results" / "superseded_scores.csv"
+    if not path.exists():
+        return []
+    pre = {}
+    for r in csv.DictReader(open(path, newline="")):
+        v = num(r["score_at_audit"])
+        if v is not None:
+            pre[(r["task_id"], r["arm"])] = v
+    alt = {k: pre.get(k, v) for k, v in cells.items()}
+    rows = []
+    for arm in ARMS:
+        now = [v for (t, a), v in cells.items() if a == arm]
+        sub = [v for (t, a), v in alt.items() if a == arm]
+        rows.append({
+            "arm": LABEL[arm],
+            "published": round(statistics.fmean(now), 2),
+            "earlier_scores": round(statistics.fmean(sub), 2),
+            "delta": round(statistics.fmean(sub) - statistics.fmean(now), 2),
+        })
+    for label, c in (("published", cells), ("earlier_scores", alt)):
+        pooled = [v for (t, a), v in c.items() if a in TOOL_ARMS]
+        base = [v for (t, a), v in c.items() if a == "baseline"]
+        rows.append({"arm": f"  execution gap ({label})",
+                     "published": "", "earlier_scores": "",
+                     "delta": round(statistics.fmean(pooled)
+                                    - statistics.fmean(base), 2)})
+    for other in ("biomni", "galaxy"):
+        out = []
+        for label, c in (("published", cells), ("earlier", alt)):
+            shared = ({t for t, a in c if a == "smartsbio-key"}
+                      & {t for t, a in c if a == other})
+            win = sum(1 for t in shared if c[(t, "smartsbio-key")] > c[(t, other)])
+            loss = sum(1 for t in shared if c[(t, "smartsbio-key")] < c[(t, other)])
+            out.append(f"{win}-{loss} p={sign_test(win, win + loss):.4f}")
+        rows.append({"arm": f"  smarts.bio vs {LABEL[other]}",
+                     "published": out[0], "earlier_scores": out[1], "delta": ""})
+    return rows
+
+
+def audit_direction(audit):
+    """Net effect of the audit layer, by condition (§5.1).
+
+    Reported because the paper makes a claim about which condition the audit
+    cost, and a claim of that kind should not be hand-computed.
+    """
+    net = defaultdict(float)
+    up = defaultdict(int)
+    down = defaultdict(int)
+    for r in audit:
+        j, a = num(r.get("judge_accuracy")), num(r.get("audit_accuracy"))
+        if j is None or a is None:
+            continue
+        d = a - j
+        net[r["arm"]] += d
+        if d > 0:
+            up[r["arm"]] += 1
+        elif d < 0:
+            down[r["arm"]] += 1
+    return [{"arm": LABEL.get(k, k), "net_points": round(net[k], 1),
+             "upgrades": up[k], "downgrades": down[k]}
+            for k in sorted(net)]
 
 
 def latency_and_cost(cells, meta, runs):
@@ -382,6 +491,13 @@ def main():
         show("Paired task-level outcomes (§3.7)", head_to_head(cells))
         show("Latency and driver cost (§3.5, §3.6)",
              latency_and_cost(cells, meta, runs))
+        show("Deterministic layer vs judge (§2.4)",
+             deterministic_layer(cells, tasks, runs))
+        if opts["apply_audit"]:
+            show("Net effect of the audit layer, by condition (§5.1)",
+                 audit_direction(audit))
+            show("Cells that were run again: earlier-score substitution (§5.9)",
+                 rerun_substitution(cells, tasks))
 
         if args.csv:
             tag = "primary" if opts["apply_audit"] else "raw"

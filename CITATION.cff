@@ -1,18 +1,21 @@
 cff-version: 1.2.0
 title: >-
-  A four-arm benchmark of agentic bioinformatics platforms:
-  smarts.bio, Biomni, Galaxy and an untooled control
+  The execution gap in agentic bioinformatics: a fixed-model
+  comparison of the Biomni, Galaxy and smarts.bio tool servers
+  against an untooled control
 message: >-
   If you use this benchmark, its task set or its results, please
   cite it. Cite the commit hash or the Zenodo DOI so it is clear
   which version you read.
-type: dataset
+type: software
 authors:
   - family-names: Orpaz
     given-names: Nir
     affiliation: smarts.bio
     orcid: https://orcid.org/0009-0004-7037-040X
 repository-code: https://github.com/smartsbio/bio-agent-platform-benchmark
+doi: 10.5281/zenodo.24559143
+version: 1.0.0
 abstract: >-
   The same model answering the same prompts through one platform's
   tool server at a time, or through none at all. Four conditions,

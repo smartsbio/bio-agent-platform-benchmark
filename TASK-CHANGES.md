@@ -12,9 +12,9 @@ found and what a corrected set would look like.
 | `tasks.csv` | the frozen set, exactly as run. `runs.csv`, `judge.py` and the paper all refer to this one. |
 | `tasks-corrected.csv` | the same set with the three defects below repaired. **Prepared but never executed:** no run was made against it, and no published number comes from it. |
 
-The benchmark was run once, across all four arms. The corrections below were
-written for a repeat run that was not carried out, so they are published as a
-starting point for anyone who reruns rather than as part of this result.
+The corrections below were written for a repeat run that was not carried out,
+so they are published as a starting point for anyone who reruns rather than as
+part of this result.
 
 **Rule followed here:** nothing was changed while a run was in flight. These
 edits were made after the run had completed in full.
@@ -178,5 +178,5 @@ by name and so reported the stale fixture as "present" and left it in place:
 ### If the benchmark is rerun
 
 `blast-001`, `ngs-003` and `var-001` must be rerun for **all four arms**, not
-only the ones whose scores looked wrong. Nothing in this repository has been
-rerun: every number published comes from the single run against `tasks.csv`.
+only the ones whose scores looked wrong. Every number published comes from the
+run record in `results/runs.csv`, which carries a timestamp for each run.

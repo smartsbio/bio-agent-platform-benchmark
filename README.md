@@ -374,14 +374,17 @@ verified, was.
 
 ### Operationalising the frozen ground truth (`checks.json`)
 
-`tasks.csv` was pre-registered and frozen before the first run, and its
+`tasks.csv` was frozen before the first run, though not under version control
+at the time, so the freeze is an assertion by the author rather than something
+the history can prove (§2.2 of the paper says so). Its
 `ground_truth` column is prose written for a human reader and for the rubric
 judge — `1EMA is NOT wild type; it is the S65T point mutant of GFP`. Prose
 cannot be string-matched, which is why the 19 `contains_all` rows initially
 carried no deterministic verdict at all and fell through to the judge.
 
 `checks.json` turns that prose into checkable items **without editing the frozen
-task set**, so `tasks.csv` keeps the commit hash cited in the article. Each task
+task set**. It was written after the runs completed, which is why the separation
+below matters. Each task
 maps to a list of requirements; each requirement is a list of synonyms, and any
 one of them satisfies it (`F508del`, `delta F508` and `Phe508del` are the same
 finding). Coordinates are normalised before matching, so `chr1:14,000`,
@@ -618,6 +621,8 @@ running and scoring
 the record
   results/runs.csv              one row per run
   results/reference_audit.csv   the audit layer, kept separate from the judge's scores
+  results/superseded_scores.csv the scores recorded for six smarts.bio cells
+                                before they were run again (§2.3, §5.9)
   results/identifier_audit.csv  registry resolution for every identifier emitted
   transcripts/                  raw stream-json for every run
   audit/                        ground-truth derivation and identifier verification
@@ -657,9 +662,9 @@ dataset, which is de-identified and not redistributed here.
 ## Citing this
 
 ```
-smarts.bio (2026). A four-arm benchmark of agentic bioinformatics platforms:
-smarts.bio, Biomni, Galaxy and an untooled control.
-https://github.com/smartsbio/bio-agent-platform-benchmark
+Orpaz N (2026). The execution gap in agentic bioinformatics: a fixed-model
+comparison of the Biomni, Galaxy and smarts.bio tool servers against an
+untooled control. Zenodo. doi:10.5281/zenodo.24559143
 ```
 
 Cite the commit hash along with it: the hash identifies exactly which version of
@@ -669,7 +674,11 @@ first run, but it was not under version control at the time, so the freeze is an
 assertion by the author rather than something the history can prove. §2.2 of the
 paper says so plainly, and `TASK-CHANGES.md` records every change made since.
 
-A Zenodo DOI will be minted from a tagged release; cite that once it exists.
+The Zenodo archive at [doi:10.5281/zenodo.24559143](https://doi.org/10.5281/zenodo.24559143)
+is the permanent copy; cite it in preference to the repository URL, which can
+move. Corrections are published as new versions of that record rather than
+edits to it, so a citation always resolves to the version it was written
+against.
 
 ## Licence
 

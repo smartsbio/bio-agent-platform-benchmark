@@ -45,8 +45,9 @@ appropriate credit, link to the licence, and indicate if changes were made.
 
 Suggested citation:
 
-  smarts.bio (2026). A four-arm benchmark of agentic bioinformatics platforms:
-  smarts.bio, Biomni, Galaxy and an untooled control.
+  Orpaz N (2026). The execution gap in agentic bioinformatics: a fixed-model
+  comparison of the Biomni, Galaxy and smarts.bio tool servers against an
+  untooled control.
 
 ================================================================================
 THIRD-PARTY FIXTURES
