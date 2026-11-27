@@ -304,9 +304,14 @@ def rerun_substitution(cells, tasks):
     path = ROOT / "results" / "superseded_scores.csv"
     if not path.exists():
         return []
+    # score_before is on the same basis as the published cell it replaces: the
+    # audited score where the audit returned a digit verdict, the judge score
+    # otherwise. Mixing a raw judge score into an audit-corrected comparison
+    # would compare two different specifications (day-004 is the case that
+    # matters: the audit overturned the judge on its earlier run).
     pre = {}
     for r in csv.DictReader(open(path, newline="")):
-        v = num(r["score_at_audit"])
+        v = num(r["score_before"])
         if v is not None:
             pre[(r["task_id"], r["arm"])] = v
     alt = {k: pre.get(k, v) for k, v in cells.items()}

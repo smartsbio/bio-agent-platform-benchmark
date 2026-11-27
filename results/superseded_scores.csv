@@ -1,7 +1,7 @@
-task_id,arm,audit_date,score_at_audit,published_score,note
-day-004,smartsbio-key,2026-11-03,0,1,judge score recorded by the audit layer before this cell was run again
-rna-001,smartsbio-key,2026-11-04,0,3,judge score recorded by the audit layer before this cell was run again
-struct-002,smartsbio-key,2026-11-04,1,3,judge score recorded by the audit layer before this cell was run again
-expr-002,smartsbio-key,2026-11-04,0,3,judge score recorded by the audit layer before this cell was run again
-var-001,smartsbio-key,2026-11-04,0,2,cell is voided in the primary specification; listed for completeness
-des-006,smartsbio-key,2026-11-06,1,3,judge score recorded by the audit layer before this cell was run again
+task_id,arm,audit_date,judge_score_before,audited_score_before,score_before,published_score,note
+day-004,smartsbio-key,2026-11-03,0,3,3,1,"audit overturned the judge's fabrication flag on the earlier run; on the primary basis this cell scored lower after being run again"
+rna-001,smartsbio-key,2026-11-04,0,0,0,3,audit agreed with the judge on the earlier run
+struct-002,smartsbio-key,2026-11-04,1,1,1,3,audit agreed with the judge on the earlier run
+expr-002,smartsbio-key,2026-11-04,0,0,0,3,audit agreed with the judge on the earlier run
+var-001,smartsbio-key,2026-11-04,0,0,0,2,cell is voided in the primary specification; listed for completeness
+des-006,smartsbio-key,2026-11-06,1,,1,3,audit recorded no digit verdict (classified infra_error); judge score used
