@@ -292,6 +292,26 @@ def deterministic_layer(cells, tasks, runs):
     ]
 
 
+def hallucination_flags(runs, audit, void):
+    """§3.8: how many of the judge's hallucination flags survived audit.
+
+    The paper quotes this ratio, so it is derived here. A flag counts only if
+    its run is in the primary specification; a refutation counts only if the
+    audit layer carries a row for that same (task, condition) withdrawing it.
+    """
+    flagged = [(r["task_id"], r["arm"]) for r in runs
+               if r["rep"] == "1" and r.get("hallucination") == "y"
+               and r["task_id"] not in void]
+    refuted = {(a["task_id"], a["arm"]) for a in audit
+               if a["judge_hallucination"] == "y" and a["audit_hallucination"] == "n"}
+    kept = [k for k in flagged if k in refuted]
+    return [
+        {"quantity": "flags raised by the judge (primary)", "n": len(flagged)},
+        {"quantity": "  refuted on audit", "n": len(kept)},
+        {"quantity": "  not audited", "n": len(flagged) - len(kept)},
+    ]
+
+
 def rerun_substitution(cells, tasks):
     """§5.9: six smarts.bio cells were run again during the study. The audit
     layer recorded a judge score for each before that happened. Substituting
@@ -503,6 +523,8 @@ def main():
                  audit_direction(audit))
             show("Cells that were run again: earlier-score substitution (§5.9)",
                  rerun_substitution(cells, tasks))
+            show("Judge hallucination flags against the audit (§3.8)",
+                 hallucination_flags(runs, audit, voided_tasks(audit)))
 
         if args.csv:
             tag = "primary" if opts["apply_audit"] else "raw"
