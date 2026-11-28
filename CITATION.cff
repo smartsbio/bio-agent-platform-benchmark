@@ -21,9 +21,11 @@ abstract: >-
   tool server at a time, or through none at all. Four conditions,
   46 tasks each after audit, scored by a rubric judge blinded to
   condition. Built by smarts.bio, which is one of the conditions
-  under comparison; the task set, the full run record and the raw
-  transcript of every run are released so the result can be checked
-  rather than taken on trust.
+  under comparison; the task set, the run record (195 current
+  records; at least six cells were run again during the study and
+  the superseded runs are not retained, see section 5.9) and the
+  raw transcript of every run in that record are released so the
+  result can be checked rather than taken on trust.
 keywords:
   - bioinformatics
   - computational biology
